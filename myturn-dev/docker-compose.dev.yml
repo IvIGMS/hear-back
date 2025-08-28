@@ -1,0 +1,42 @@
+version: "3.8"
+name: hear-dev
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks: [hear_net]
+
+  api:
+    # esta imagen la construiremos y subiremos con GitHub Actions
+    image: ghcr.io/example/repositorio-api:latest-develop
+    restart: unless-stopped
+    depends_on: [db]
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      # BBDD (dentro de la red de compose)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      # App
+      JWT_KEY: ${JWT_KEY}
+      IS_EMAIL_MOCKED: ${IS_EMAIL_MOCKED}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
+      BREVO_SMTP_USER: ${BREVO_SMTP_USER}
+      BREVO_SMTP_KEY: ${BREVO_SMTP_KEY}
+    ports:
+      - "8080:8080"
+    networks: [hear_net]
+
+volumes:
+  db_data:
+
+networks:
+  hear_net:

@@ -1,0 +1,3 @@
+app:
+  mail:
+    is-email-mocked: ${IS_EMAIL_MOCKED:true}

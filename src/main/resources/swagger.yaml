@@ -1,0 +1,529 @@
+openapi: 3.0.2
+info:
+  title: HearApp
+  version: v1
+tags:
+  - name: auth
+    description: Endpoints de autenticación
+  - name: subscriptions
+    description: Endpoints de gestión de suscripciones
+  - name: companies
+    description: Endpoints de gestión de empresas
+security:
+  - bearerAuth: []
+paths:
+  /users/test:
+    get:
+      summary: endpoint publico test
+      operationId: getTest
+      responses:
+        '200':
+          $ref: '#/components/responses/ReponseTest'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+  /login:
+    post:
+      summary: Login de un user
+      operationId: login
+      requestBody:
+        $ref: '#/components/requestBodies/AuthenticationRequestBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/AuthenticationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - auth
+  /register:
+    post:
+      summary: Register de un user
+      operationId: register
+      requestBody:
+        $ref: '#/components/requestBodies/RegisterRequestBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/AuthenticationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - auth
+components:
+  requestBodies:
+    AuthenticationRequestBody:
+      description: Login de un user
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthenticationRequestDTO'
+          example:
+            email: "usuario@ejemplo.com"
+            password: "123456"
+    RegisterRequestBody:
+      description: Registrar un user
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RegisterRequestDTO'
+
+  parameters:
+    pageNumberQueryParam:
+      name: pageNumberQueryParam
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/pageNumberQueryParam'
+    pageSizeQueryParam:
+      name: pageSizeQueryParam
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/pageSizeQueryParam'
+    nameQueryParam:
+      name: nameQueryParam
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/nameQueryParam'
+    sortByQueryParam:
+      name: sortByQueryParam
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/sortByQueryParam'
+    linkedCodePathParam:
+      name: linkedCodePathParam
+      in: path
+      required: true
+      schema:
+        type: string
+    ownerIdPathParam:
+      name: ownerIdPathParam
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    userIdPathParam:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    subscriptionIdPathParam:
+      name: subscriptionId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    companyIdPathParam:
+      name: companyId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+  responses:
+    ReponseTest:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TestDTO'
+    ListUsersResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/UserDTO'
+    AuthenticationResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthenticationDTO'
+    ResponseListUserDTO:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/UserDTO'
+    ResponseUserDTO:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserDTO'
+    SubscriptionResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SubscriptionDTO'
+    SubscriptionListResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/SubscriptionDTO'
+    CompanyResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CompanyDTO'
+    CompanyListResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/CompanyDTO'
+    PagedResponseUserDTO:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagedResponseUserDTO'
+    NoContent:
+      description: No Content
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Problem'
+          example:
+            '400':
+              value:
+                type: 'https://api.example.com/problems/validation-error'
+                status: 400
+                title: Validation Error
+                detail: >-
+                  One or more fields are invalid. See details for more information.
+                instance: 'https://api.example.com/problems/validation-error/12345'
+    Unauthorized:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Problem'
+          example:
+            '400':
+              value:
+                type: 'https://api.example.com/problems/validation-error'
+                status: 401
+                title: Validation Error
+                detail: >-
+                  One or more fields are invalid. See details for more information.
+                instance: 'https://api.example.com/problems/validation-error/12345'
+    Forbidden:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Problem'
+          example:
+            '400':
+              value:
+                type: 'https://api.example.com/problems/validation-error'
+                status: 403
+                title: Validation Error
+                detail: >-
+                  One or more fields are invalid. See details for more information.
+                instance: 'https://api.example.com/problems/validation-error/12345'
+    NotFound:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Problem'
+          example:
+            '400':
+              value:
+                type: 'https://api.example.com/problems/validation-error'
+                status: 404
+                title: Validation Error
+                detail: >-
+                  One or more fields are invalid. See details for more information.
+                instance: 'https://api.example.com/problems/validation-error/12345'
+    UnexpectedError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Problem'
+          example:
+            '400':
+              value:
+                type: 'https://api.example.com/problems/validation-error'
+                status: 404
+                title: Validation Error
+                detail: >-
+                  One or more fields are invalid. See details for more information.
+                instance: 'https://api.example.com/problems/validation-error/12345'
+  schemas:
+    NotificationDto:
+      type: object
+      properties:
+        emailTo:
+          type: string
+          example: user@user.com
+        subject:
+          type: string
+          example: Notificación suscripción
+        text:
+          type: string
+          example: Texto de ejemplo del correo
+        notificationType:
+          type: string
+          example: END_SUBSCRIPTION
+        isSended:
+          type: boolean
+          example: false
+    PagedResponseUserDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDTO'
+        number:
+          type: integer
+          example: 1
+        size:
+          type: integer
+          example: 25
+        totalElements:
+          type: integer
+          format: int64
+          example: 232
+        totalPages:
+          type: integer
+          example: 23
+    UserDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 12345
+        email:
+          type: string
+          example: user@user.com
+        firstname:
+          type: string
+          example: Luis
+        lastname:
+          type: string
+          example: Perez
+        isEmailActive:
+          type: boolean
+          example: false
+        role:
+          type: string
+          example: USER
+    AuthenticationRequestDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          example: friasgilivan@gmail.com
+        password:
+          type: string
+          example: 123456
+    TestDTO:
+      type: object
+      properties:
+        version:
+          type: string
+          example: 0.0.2
+    RegisterRequestDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          example: friasgilivan@gmail.com
+        password:
+          type: string
+          example: 123456
+        firstname:
+          type: string
+          example: 123456
+        lastname:
+          type: string
+          example: 123456
+        role:
+          $ref: '#/components/schemas/Role'
+    AuthenticationDTO:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdG5hbW...
+    Role:
+      type: string
+      enum:
+        - USER
+        - ADMIN
+      description: Role de los users de la app
+    Problem:
+      type: object
+      properties:
+        error:
+          type: string
+    userId:
+      title: example
+      description: example
+      type: integer
+      format: int64
+      minimum: 1
+      maximum: 999999999999
+      example: 1
+    sortByQueryParam:
+      type: string
+      example: "productName"
+    pageNumberQueryParam:
+      title: example
+      description: example
+      type: integer
+      minimum: 1
+      maximum: 99999
+      example: 1
+    pageSizeQueryParam:
+      title: example
+      description: example
+      type: integer
+      minimum: 1
+      maximum: 99999
+      example: 1
+    nameQueryParam:
+      type: string
+      example: "Joaquin"
+    CreateSubscriptionRequestDTO:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          example: 123
+        startDate:
+          type: string
+          format: date
+          example: "2024-01-01"
+        durationInMonths:
+          type: integer
+          minimum: 1
+          maximum: 120
+          example: 12
+      required:
+        - userId
+        - startDate
+        - durationInMonths
+    SubscriptionDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        userId:
+          type: integer
+          format: int64
+          example: 123
+        companyId:
+          type: integer
+          format: int64
+          example: 123
+        startDate:
+          type: string
+          format: date
+          example: "2024-01-01"
+        endDate:
+          type: string
+          format: date
+          example: "2024-12-31"
+      required:
+        - id
+        - userId
+        - startDate
+        - endDate
+    CreateCompanyRequestDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Mi Empresa S.L."
+      required:
+        - name
+    CompanyDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Mi Empresa S.L."
+        ownerId:
+          type: integer
+          format: int64
+          example: 123
+        linkCode:
+          type: string
+          example: "eK408wX6pf"
+      required:
+        - id
+        - name
+        - ownerId
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,47 @@
+server:
+  port: 8080
+
+spring:
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: ${BREVO_SMTP_USER}
+    password: ${BREVO_SMTP_KEY}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  application:
+    name: hear-back
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_KEY:}
+      expiration: 864000000
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+
+app:
+  mail:
+    smtp-from-name: ${SMTP_FROM_NAME:}
+    smtp-from-email: ${SMTP_FROM_EMAIL:}
+    is-email-mocked: ${IS_EMAIL_MOCKED:false}
+
+info:
+  app:
+    version: @project.version@
