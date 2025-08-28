@@ -40,7 +40,7 @@ jobs:
       - name: Compute IMAGE_NAME
         run: |
           OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          echo "IMAGE_NAME=ghcr.io/${OWNER_LC}/myturn-back-api" >> $GITHUB_ENV
+          echo "IMAGE_NAME=ghcr.io/${OWNER_LC}/hear-back-api" >> $GITHUB_ENV
       - name: Read Maven project version
         run: echo "VERSION=$(mvn -q -DforceStdout -Dexpression=project.version help:evaluate)" >> $GITHUB_ENV
       - name: Build & push image
@@ -66,10 +66,10 @@ jobs:
           script: |
             set -e
             OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-            IMAGE="ghcr.io/${OWNER_LC}/myturn-back-api:latest-develop"
+            IMAGE="ghcr.io/${OWNER_LC}/hear-back-api:latest-develop"
             echo "Pulling latest image..."
             docker pull $IMAGE
-            cd ~/myturn-dev
+            cd ~/hear-dev
             echo "Restarting API service..."
             docker compose -f docker-compose.dev.yml up -d api
             echo "Cleaning old images..."
