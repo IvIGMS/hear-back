@@ -21,7 +21,6 @@ public class UserController extends ControllerUtils implements UsersApi {
 
   @Override
   public ResponseEntity<TestDTO> getTest() {
-    System.out.println("dummy change");
     return ResponseEntity.ok(TestDTO.builder().version(appVersion).build());
   }
 }
