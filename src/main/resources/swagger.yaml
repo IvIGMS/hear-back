@@ -12,6 +12,25 @@ tags:
 security:
   - bearerAuth: []
 paths:
+  /tags/{tagId}:
+    get:
+      summary: get a tag by id
+      operationId: getTagById
+      parameters:
+        - $ref: '#/components/parameters/tagId'
+      responses:
+        '200':
+          $ref: '#/components/responses/TagResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
   /users/test:
     get:
       summary: endpoint publico test
@@ -92,6 +111,12 @@ components:
             $ref: '#/components/schemas/RegisterRequestDTO'
 
   parameters:
+    tagId:
+      name: tagId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/genericId'
     pageNumberQueryParam:
       name: pageNumberQueryParam
       in: query
@@ -151,6 +176,12 @@ components:
         type: integer
         format: int64
   responses:
+    TagResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TagDTO'
     ReponseTest:
       description: OK.
       content:
@@ -382,6 +413,18 @@ components:
         version:
           type: string
           example: 0.0.2
+    TagDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          example: friasgilivan@gmail.com
+        password:
+          type: string
+          example: 123456
+        name:
+          type: string
+          example: universidad
     RegisterRequestDTO:
       type: object
       properties:
@@ -416,6 +459,14 @@ components:
       properties:
         error:
           type: string
+    genericId:
+      title: example
+      description: example
+      type: integer
+      format: int64
+      minimum: 1
+      maximum: 999999999999
+      example: 1
     userId:
       title: example
       description: example
