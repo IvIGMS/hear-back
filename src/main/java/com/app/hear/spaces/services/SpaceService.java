@@ -2,8 +2,10 @@ package com.app.hear.spaces.services;
 
 import com.app.hear.common.exceptions.ConflictException;
 import com.app.hear.common.exceptions.NotFoundException;
+import com.app.hear.model.RoleUserSpace;
 import com.app.hear.model.SpaceCreateDTO;
 import com.app.hear.model.SpaceDTO;
+import com.app.hear.model.UserSpaceRoleRequestDTO;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
 import com.app.hear.spaces.dao.repositories.SpaceRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +17,10 @@ import org.springframework.stereotype.Service;
 public class SpaceService {
   private final SpaceRepository spaceRepository;
   private final ModelMapper modelMapper;
+  private final UserSpaceRoleService userSpaceRoleService;
 
-  public SpaceDTO createSpace(SpaceCreateDTO spaceCreateDTO) {
+  public SpaceDTO createSpace(SpaceCreateDTO spaceCreateDTO, Long ownerId) {
+    // Crear el space
     spaceRepository
         .findByName(spaceCreateDTO.getName())
         .ifPresent(
@@ -26,6 +30,12 @@ public class SpaceService {
             });
     SpaceEntity spaceEntity = modelMapper.map(spaceCreateDTO, SpaceEntity.class);
     SpaceEntity savedSpace = spaceRepository.save(spaceEntity);
+    // Asignar rol de admin a quien lo crea
+    userSpaceRoleService.createUserSpaceRole(UserSpaceRoleRequestDTO.builder()
+                    .spaceId(savedSpace.getId())
+                    .userId(ownerId)
+                    .role(RoleUserSpace.ADMIN)
+            .build());
     return modelMapper.map(savedSpace, SpaceDTO.class);
   }
 

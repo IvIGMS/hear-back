@@ -2,6 +2,7 @@ package com.app.hear.spaces.controllers;
 
 import com.app.hear.api.SpacesApi;
 import com.app.hear.common.exceptions.utils.ControllerUtils;
+import com.app.hear.common.exceptions.utils.UnauthorizedException;
 import com.app.hear.model.SpaceCreateDTO;
 import com.app.hear.model.SpaceDTO;
 import com.app.hear.model.UserSpaceRoleDTO;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.app.hear.common.exceptions.utils.ControllerUtilsConstants.STRING_NO_PREMISSIONS;
+
 @RestController
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
@@ -22,7 +25,11 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
 
   @Override
   public ResponseEntity<SpaceDTO> createSpace(SpaceCreateDTO spaceCreateDTO) {
-    SpaceDTO spaceDTO = spaceService.createSpace(spaceCreateDTO);
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
+    SpaceDTO spaceDTO = spaceService.createSpace(spaceCreateDTO, ownerId);
     return ResponseEntity.created(createLocation(spaceDTO.getId())).body(spaceDTO);
   }
 

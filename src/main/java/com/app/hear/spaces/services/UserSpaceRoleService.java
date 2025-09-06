@@ -1,11 +1,13 @@
 package com.app.hear.spaces.services;
 
 import com.app.hear.common.exceptions.ConflictException;
+import com.app.hear.common.exceptions.NotFoundException;
 import com.app.hear.model.UserSpaceRoleDTO;
 import com.app.hear.model.UserSpaceRoleRequestDTO;
 import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
 import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
+import com.app.hear.spaces.dao.repositories.SpaceRepository;
 import com.app.hear.spaces.dao.repositories.UserSpaceRoleRepository;
 import com.app.hear.users.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +19,8 @@ import org.springframework.stereotype.Service;
 public class UserSpaceRoleService {
   private final UserSpaceRoleRepository userSpaceRoleRepository;
   private final ModelMapper modelMapper;
-  private final SpaceService spaceService;
   private final UserService userService;
+  private final SpaceRepository spaceRepository;
 
   public UserSpaceRoleDTO createUserSpaceRole(UserSpaceRoleRequestDTO userSpaceRoleRequestDTO) {
     userSpaceRoleRepository
@@ -34,7 +36,7 @@ public class UserSpaceRoleService {
             });
 
     UserEntity userEntity = userService.getUserEntityById(userSpaceRoleRequestDTO.getUserId());
-    SpaceEntity spaceEntity = spaceService.getSpaceEntityById(userSpaceRoleRequestDTO.getSpaceId());
+    SpaceEntity spaceEntity = getSpaceById(userSpaceRoleRequestDTO.getSpaceId());
 
     UserSpaceRole userSpaceRole = new UserSpaceRole();
     userSpaceRole.setUser(userEntity);
@@ -47,5 +49,11 @@ public class UserSpaceRoleService {
     UserSpaceRole savedUserSpaceRole = userSpaceRoleRepository.save(userSpaceRole);
 
     return modelMapper.map(savedUserSpaceRole, UserSpaceRoleDTO.class);
+  }
+
+  public SpaceEntity getSpaceById(Long spaceId) {
+    return spaceRepository
+            .findById(spaceId)
+            .orElseThrow(() -> new NotFoundException("Space with id " + spaceId + " not found"));
   }
 }
