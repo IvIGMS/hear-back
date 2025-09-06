@@ -9,9 +9,32 @@ tags:
     description: Endpoints de gestión de suscripciones
   - name: companies
     description: Endpoints de gestión de empresas
+  - name: tags
+    description: Endpoints de gestión de tags
 security:
   - bearerAuth: []
 paths:
+  /tags:
+    post:
+      summary: create a new tag
+      operationId: createTag
+      requestBody:
+        $ref: '#/components/requestBodies/TagCreateRequestBody'
+      responses:
+        '201':
+          $ref: '#/components/responses/TagResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - tags
   /tags/{tagId}:
     get:
       summary: get a tag by id
@@ -31,6 +54,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - tags
   /users/test:
     get:
       summary: endpoint publico test
@@ -109,6 +134,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/RegisterRequestDTO'
+    TagCreateRequestBody:
+      description: Create a new tag
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TagCreateDTO'
 
   parameters:
     tagId:
@@ -413,6 +445,12 @@ components:
         version:
           type: string
           example: 0.0.2
+    TagCreateDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          example: universidad
     TagDTO:
       type: object
       properties:
