@@ -5,15 +5,55 @@ info:
 tags:
   - name: auth
     description: Endpoints de autenticación
-  - name: subscriptions
-    description: Endpoints de gestión de suscripciones
-  - name: companies
-    description: Endpoints de gestión de empresas
   - name: tags
     description: Endpoints de gestión de tags
+  - name: spaces
+    description: Endpoints de gestión de spaces
 security:
   - bearerAuth: []
 paths:
+  /spaces:
+    post:
+      summary: create a new space
+      operationId: createSpace
+      requestBody:
+        $ref: '#/components/requestBodies/SpaceCreateRequestBody'
+      responses:
+        '201':
+          $ref: '#/components/responses/SpaceResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - spaces
+  /spaces/{spaceId}:
+    get:
+      summary: get a space by id
+      operationId: getSpaceById
+      parameters:
+        - $ref: '#/components/parameters/spaceId'
+      responses:
+        '200':
+          $ref: '#/components/responses/SpaceResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - spaces
   /tags:
     post:
       summary: create a new tag
