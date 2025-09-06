@@ -1,7 +1,7 @@
 package com.app.hear.security.dao.models.entities;
 
 import com.app.hear.common.exceptions.utils.AuditableEntity;
-import com.app.hear.security.dao.models.enums.RoleEnum;
+import com.app.hear.security.dao.models.enums.RoleUserEnum;
 import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
 import com.app.hear.voiceNotes.dao.models.entities.VoiceNote;
 import jakarta.persistence.*;
@@ -47,5 +47,5 @@ public class UserEntity extends AuditableEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private RoleEnum role;
+  private RoleUserEnum role;
 }

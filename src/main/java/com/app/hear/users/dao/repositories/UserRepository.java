@@ -1,7 +1,7 @@
 package com.app.hear.users.dao.repositories;
 
 import com.app.hear.security.dao.models.entities.UserEntity;
-import com.app.hear.security.dao.models.enums.RoleEnum;
+import com.app.hear.security.dao.models.enums.RoleUserEnum;
 import com.app.hear.users.dao.dto.UserDownDto;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
       nativeQuery = true)
   List<UserEntity> getUsersByOwnerId(@Param("ownerId") Long ownerId);
 
-  List<UserEntity> findByRole(RoleEnum role);
+  List<UserEntity> findByRole(RoleUserEnum role);
 
   @Query(
       value =

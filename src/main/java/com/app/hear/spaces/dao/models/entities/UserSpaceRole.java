@@ -2,7 +2,7 @@ package com.app.hear.spaces.dao.models.entities;
 
 import com.app.hear.common.exceptions.utils.AuditableEntity;
 import com.app.hear.security.dao.models.entities.UserEntity;
-import com.app.hear.spaces.dao.models.enums.Role;
+import com.app.hear.spaces.dao.models.enums.RoleUserSpace;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +21,7 @@ public class UserSpaceRole extends AuditableEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private Role role; // ADMIN, MEMBER
+    private RoleUserSpace role; // ADMIN, MEMBER
 
     @ManyToOne
     @JoinColumn(name = "user_id")

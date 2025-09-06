@@ -3,7 +3,7 @@ package com.app.hear.users.services;
 import com.app.hear.common.exceptions.NotFoundException;
 import com.app.hear.model.UserDTO;
 import com.app.hear.security.dao.models.entities.UserEntity;
-import com.app.hear.security.dao.models.enums.RoleEnum;
+import com.app.hear.security.dao.models.enums.RoleUserEnum;
 import com.app.hear.users.dao.dto.UserDownDto;
 import com.app.hear.users.dao.repositories.UserRepository;
 import java.time.LocalDate;
@@ -38,7 +38,7 @@ public class UserService {
   }
 
   public List<UserEntity> getAdminUsers() {
-    return userRepository.findByRole(RoleEnum.ADMIN);
+    return userRepository.findByRole(RoleUserEnum.ADMIN);
   }
 
   public List<UserDownDto> usersDownToday() {
