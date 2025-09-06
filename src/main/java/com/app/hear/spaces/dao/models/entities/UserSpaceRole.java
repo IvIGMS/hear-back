@@ -16,18 +16,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserSpaceRole extends AuditableEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private RoleUserSpace role; // ADMIN, MEMBER
+  @Enumerated(EnumType.STRING)
+  private RoleUserSpace role; // ADMIN, MEMBER
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private UserEntity user;
 
-    @ManyToOne
-    @JoinColumn(name = "space_id")
-    private SpaceEntity space;
+  @ManyToOne
+  @JoinColumn(name = "space_id")
+  private SpaceEntity space;
 }

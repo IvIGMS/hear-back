@@ -1,6 +1,5 @@
 package com.app.hear.tags.controllers;
 
-
 import com.app.hear.api.TagsApi;
 import com.app.hear.common.exceptions.utils.ControllerUtils;
 import com.app.hear.model.TagCreateDTO;
@@ -15,15 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
 public class TagController extends ControllerUtils implements TagsApi {
-    private final TagService tagService;
+  private final TagService tagService;
 
-    @Override
-    public ResponseEntity<TagDTO> createTag(TagCreateDTO tagCreateDTO) {
-        return ResponseEntity.status(201).body(tagService.createTag(tagCreateDTO));
-    }
+  @Override
+  public ResponseEntity<TagDTO> createTag(TagCreateDTO tagCreateDTO) {
+    return ResponseEntity.status(201).body(tagService.createTag(tagCreateDTO));
+  }
 
-    @Override
-    public ResponseEntity<TagDTO> getTagById(Long tagId) {
-        return ResponseEntity.ok(tagService.getTagById(tagId));
-    }
+  @Override
+  public ResponseEntity<TagDTO> getTagById(Long tagId) {
+    return ResponseEntity.ok(tagService.getTagById(tagId));
+  }
 }

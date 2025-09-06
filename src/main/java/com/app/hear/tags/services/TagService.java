@@ -14,25 +14,31 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TagService {
 
-    private final TagRepository tagRepository;
-    private final ModelMapper modelMapper;
+  private final TagRepository tagRepository;
+  private final ModelMapper modelMapper;
 
-    public TagDTO getTagById(Long tagId) {
-        TagEntity tagEntity = tagRepository.findById(tagId)
-                .orElseThrow(() -> new NotFoundException("Tag not found with id: " + tagId));
-        return modelMapper.map(tagEntity, TagDTO.class);
-    }
+  public TagDTO getTagById(Long tagId) {
+    TagEntity tagEntity =
+        tagRepository
+            .findById(tagId)
+            .orElseThrow(() -> new NotFoundException("Tag not found with id: " + tagId));
+    return modelMapper.map(tagEntity, TagDTO.class);
+  }
 
-    public TagDTO createTag(TagCreateDTO tagCreateDTO) {
-        tagRepository.findByName(tagCreateDTO.getName()).ifPresent(t -> {
-            throw new ConflictException("Tag with name '" + tagCreateDTO.getName() + "' already exists");
-        });
+  public TagDTO createTag(TagCreateDTO tagCreateDTO) {
+    tagRepository
+        .findByName(tagCreateDTO.getName())
+        .ifPresent(
+            t -> {
+              throw new ConflictException(
+                  "Tag with name '" + tagCreateDTO.getName() + "' already exists");
+            });
 
-        TagEntity tagEntity = new TagEntity();
-        tagEntity.setName(tagCreateDTO.getName());
+    TagEntity tagEntity = new TagEntity();
+    tagEntity.setName(tagCreateDTO.getName());
 
-        TagEntity savedTag = tagRepository.save(tagEntity);
+    TagEntity savedTag = tagRepository.save(tagEntity);
 
-        return modelMapper.map(savedTag, TagDTO.class);
-    }
+    return modelMapper.map(savedTag, TagDTO.class);
+  }
 }

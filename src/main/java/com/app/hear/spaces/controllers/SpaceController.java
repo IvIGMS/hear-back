@@ -1,11 +1,13 @@
 package com.app.hear.spaces.controllers;
 
-
 import com.app.hear.api.SpacesApi;
 import com.app.hear.common.exceptions.utils.ControllerUtils;
 import com.app.hear.model.SpaceCreateDTO;
 import com.app.hear.model.SpaceDTO;
+import com.app.hear.model.UserSpaceRoleDTO;
+import com.app.hear.model.UserSpaceRoleRequestDTO;
 import com.app.hear.spaces.services.SpaceService;
+import com.app.hear.spaces.services.UserSpaceRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,15 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
 public class SpaceController extends ControllerUtils implements SpacesApi {
-    private final SpaceService spaceService;
+  private final SpaceService spaceService;
+  private final UserSpaceRoleService userSpaceRoleService;
 
-    @Override
-    public ResponseEntity<SpaceDTO> createSpace(SpaceCreateDTO spaceCreateDTO) {
-        return ResponseEntity.status(201).body(spaceService.createSpace(spaceCreateDTO));
-    }
+  @Override
+  public ResponseEntity<SpaceDTO> createSpace(SpaceCreateDTO spaceCreateDTO) {
+    SpaceDTO spaceDTO = spaceService.createSpace(spaceCreateDTO);
+    return ResponseEntity.created(createLocation(spaceDTO.getId())).body(spaceDTO);
+  }
 
-    @Override
-    public ResponseEntity<SpaceDTO> getSpaceById(Long spaceId) {
-        return ResponseEntity.ok(spaceService.getSpaceById(spaceId));
-    }
+  @Override
+  public ResponseEntity<SpaceDTO> getSpaceById(Long spaceId) {
+    return ResponseEntity.ok(spaceService.getSpaceById(spaceId));
+  }
+
+  @Override
+  public ResponseEntity<UserSpaceRoleDTO> createUserSpaceRole(
+      UserSpaceRoleRequestDTO userSpaceRoleRequestDTO) {
+    UserSpaceRoleDTO userSpaceRoleDTO =
+        userSpaceRoleService.createUserSpaceRole(userSpaceRoleRequestDTO);
+    return ResponseEntity.created(createLocation(userSpaceRoleDTO.getId())).body(userSpaceRoleDTO);
+  }
 }

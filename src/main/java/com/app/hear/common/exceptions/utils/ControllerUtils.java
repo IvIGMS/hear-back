@@ -3,13 +3,22 @@ package com.app.hear.common.exceptions.utils;
 import com.app.hear.security.services.JwtService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
+import java.net.URI;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 public abstract class ControllerUtils {
 
   @Autowired protected HttpServletRequest request;
 
   @Autowired protected JwtService jwtService;
+
+  protected URI createLocation(Long id) {
+    return ServletUriComponentsBuilder.fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(id)
+        .toUri();
+  }
 
   protected String getToken() {
     String authHeader = request.getHeader("Authorization");

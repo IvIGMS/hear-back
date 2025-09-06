@@ -5,12 +5,11 @@ import com.app.hear.security.dao.models.enums.RoleUserEnum;
 import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
 import com.app.hear.voiceNotes.dao.models.entities.VoiceNote;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Entity
 @Table(name = "users")
