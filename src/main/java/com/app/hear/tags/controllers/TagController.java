@@ -18,6 +18,6 @@ public class TagController extends ControllerUtils implements TagsApi {
 
     @Override
     public ResponseEntity<TagDTO> getTagById(Long tagId) {
-        return TagsApi.super.getTagById(tagId);
+        return ResponseEntity.ok(tagService.getTagById(tagId));
     }
 }
