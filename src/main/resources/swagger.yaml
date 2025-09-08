@@ -75,6 +75,27 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
       tags:
         - spaces
+  /tags/add-tag-space:
+    patch:
+      summary: add a tag to a space
+      operationId: addTagToSpace
+      requestBody:
+        $ref: '#/components/requestBodies/TagSpaceCreateRequestBody'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - tags
   /tags:
     post:
       summary: create a new tag
@@ -178,6 +199,13 @@ paths:
         - auth
 components:
   requestBodies:
+    TagSpaceCreateRequestBody:
+      description: Registrar un user
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TagSpaceRequestDTO'
     UserSpaceRoleCreateRequestBody:
       description: Registrar un user
       required: true
@@ -587,6 +615,13 @@ components:
         description:
           type: string
           example: description
+    TagSpaceRequestDTO:
+      type: object
+      properties:
+        tagId:
+          $ref: '#/components/schemas/genericId'
+        spaceId:
+          $ref: '#/components/schemas/genericId'
     UserSpaceRoleRequestDTO:
       type: object
       properties:

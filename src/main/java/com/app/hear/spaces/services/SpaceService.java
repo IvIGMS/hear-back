@@ -31,10 +31,11 @@ public class SpaceService {
     SpaceEntity spaceEntity = modelMapper.map(spaceCreateDTO, SpaceEntity.class);
     SpaceEntity savedSpace = spaceRepository.save(spaceEntity);
     // Asignar rol de admin a quien lo crea
-    userSpaceRoleService.createUserSpaceRole(UserSpaceRoleRequestDTO.builder()
-                    .spaceId(savedSpace.getId())
-                    .userId(ownerId)
-                    .role(RoleUserSpace.ADMIN)
+    userSpaceRoleService.createUserSpaceRole(
+        UserSpaceRoleRequestDTO.builder()
+            .spaceId(savedSpace.getId())
+            .userId(ownerId)
+            .role(RoleUserSpace.ADMIN)
             .build());
     return modelMapper.map(savedSpace, SpaceDTO.class);
   }

@@ -1,5 +1,7 @@
 package com.app.hear.spaces.controllers;
 
+import static com.app.hear.common.exceptions.utils.ControllerUtilsConstants.STRING_NO_PREMISSIONS;
+
 import com.app.hear.api.SpacesApi;
 import com.app.hear.common.exceptions.utils.ControllerUtils;
 import com.app.hear.common.exceptions.utils.UnauthorizedException;
@@ -13,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.app.hear.common.exceptions.utils.ControllerUtilsConstants.STRING_NO_PREMISSIONS;
 
 @RestController
 @RequestMapping("api/v1")

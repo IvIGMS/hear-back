@@ -28,6 +28,8 @@ public class UserSpaceRoleService {
             userSpaceRoleRequestDTO.getUserId(), userSpaceRoleRequestDTO.getSpaceId())
         .ifPresent(
             userSpaceRole -> {
+              // todo: verificar si el role que nos llega es el mismo y si no lo es lo tenemos que
+              // actualizar
               throw new ConflictException(
                   "User with id "
                       + userSpaceRoleRequestDTO.getUserId()
@@ -51,9 +53,15 @@ public class UserSpaceRoleService {
     return modelMapper.map(savedUserSpaceRole, UserSpaceRoleDTO.class);
   }
 
+  public UserSpaceRole getUserSpaceRoleByUserIdAndSpaceId(Long userId, Long spaceId) {
+    return userSpaceRoleRepository
+        .findByUserIdAndSpaceId(userId, spaceId)
+        .orElseThrow(() -> new NotFoundException("UserSpaceRole not found"));
+  }
+
   public SpaceEntity getSpaceById(Long spaceId) {
     return spaceRepository
-            .findById(spaceId)
-            .orElseThrow(() -> new NotFoundException("Space with id " + spaceId + " not found"));
+        .findById(spaceId)
+        .orElseThrow(() -> new NotFoundException("Space with id " + spaceId + " not found"));
   }
 }
