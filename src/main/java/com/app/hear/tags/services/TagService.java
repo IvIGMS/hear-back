@@ -17,6 +17,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class TagService {
@@ -71,6 +73,13 @@ public class TagService {
     TagEntity tagEntity = getTagEntityById(tagId);
     SpaceEntity spaceEntity = spaceService.getSpaceEntityById(spaceId);
 
+    if (tagRepository.existsTagInSpace(tagId, spaceId)) {
+      throw new ConflictException("Este tag y este space ya están vinculados");
+    }
     spaceEntity.getTags().add(tagEntity);
+  }
+
+  public void dropTagToSpace() {
+    // Tenemos que eliminar de la tabla simplemente
   }
 }

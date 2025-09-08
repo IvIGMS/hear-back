@@ -40,11 +40,13 @@ public class SpaceService {
     return modelMapper.map(savedSpace, SpaceDTO.class);
   }
 
-  public SpaceDTO getSpaceById(Long spaceId) {
+  public SpaceDTO getSpaceById(Long ownerId, Long spaceId) {
+    userSpaceRoleService.getUserSpaceRoleByUserIdAndSpaceId(ownerId, spaceId);
     SpaceEntity spaceEntity =
         spaceRepository
             .findById(spaceId)
             .orElseThrow(() -> new NotFoundException("Space with id " + spaceId + " not found"));
+
     return modelMapper.map(spaceEntity, SpaceDTO.class);
   }
 

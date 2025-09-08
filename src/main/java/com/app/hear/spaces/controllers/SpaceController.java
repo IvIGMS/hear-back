@@ -35,7 +35,11 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
 
   @Override
   public ResponseEntity<SpaceDTO> getSpaceById(Long spaceId) {
-    return ResponseEntity.ok(spaceService.getSpaceById(spaceId));
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
+    return ResponseEntity.ok(spaceService.getSpaceById(ownerId, spaceId));
   }
 
   @Override
