@@ -18,7 +18,8 @@ public class VoiceNoteController extends ControllerUtils implements VoiceNotesAp
   private final VoiceNoteService service;
 
   @Override
-  public ResponseEntity<Void> uploadNoteVoice(MultipartFile file, Long spaceId, String nombre, String description) {
+  public ResponseEntity<Void> uploadNoteVoice(
+      MultipartFile file, Long spaceId, String nombre, String description) {
     if (!checkIsUser()) {
       throw new UnauthorizedException(STRING_NO_PREMISSIONS);
     }

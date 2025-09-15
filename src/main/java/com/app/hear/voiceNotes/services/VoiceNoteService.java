@@ -15,10 +15,8 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,11 +31,12 @@ public class VoiceNoteService {
   private final UserSpaceRoleService userSpaceRoleService;
 
   @Transactional
-  public void uploadNoteVoice(MultipartFile file, Long spaceId, String nombreAudio, String description, Long ownerId) {
+  public void uploadNoteVoice(
+      MultipartFile file, Long spaceId, String nombreAudio, String description, Long ownerId) {
     try {
       SpaceEntity space = spaceService.getSpaceEntityById(spaceId);
 
-      String nombreAuidoTransformed = nombreAudio + createHash();
+      String nombreAuidoTransformed = nombreAudio + createHash() + ".mp3";
       String path = saveFile(file, space.getName(), nombreAuidoTransformed);
       log.info("El archivo se ha guardado correctamente en el Gestor Documental");
 
@@ -45,7 +44,8 @@ public class VoiceNoteService {
 
       userSpaceRoleService.getUserSpaceRoleByUserIdAndSpaceId(ownerId, spaceId);
 
-      VoiceNoteEntity voiceNoteEntityToSave = VoiceNoteEntity.builder()
+      VoiceNoteEntity voiceNoteEntityToSave =
+          VoiceNoteEntity.builder()
               .nombre(nombreAuidoTransformed)
               .description(description)
               .duration((int) duration)
@@ -69,7 +69,8 @@ public class VoiceNoteService {
     return duration;
   }
 
-  private String saveFile(MultipartFile file, String spaceName, String nombreAudio) throws IOException {
+  private String saveFile(MultipartFile file, String spaceName, String nombreAudio)
+      throws IOException {
     // Carpeta base en el home del usuario
     String userHome = System.getProperty("user.home");
     Path uploadPath = Paths.get(userHome, "audio_data", spaceName);
