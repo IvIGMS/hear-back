@@ -2,7 +2,7 @@ package com.app.hear.spaces.dao.models.entities;
 
 import com.app.hear.common.exceptions.utils.AuditableEntity;
 import com.app.hear.tags.dao.models.entities.TagEntity;
-import com.app.hear.voiceNotes.dao.models.entities.VoiceNote;
+import com.app.hear.voiceNotes.dao.models.entities.VoiceNoteEntity;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -31,7 +31,7 @@ public class SpaceEntity extends AuditableEntity {
   private List<UserSpaceRole> userRoles;
 
   @OneToMany(mappedBy = "space")
-  private List<VoiceNote> voiceNotes;
+  private List<VoiceNoteEntity> voiceNotes;
 
   @ManyToMany
   @JoinTable(

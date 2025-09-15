@@ -16,10 +16,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VoiceNote extends AuditableEntity {
+public class VoiceNoteEntity extends AuditableEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(nullable = false)
+  private String nombre;
 
   @Column(nullable = false)
   private String description;

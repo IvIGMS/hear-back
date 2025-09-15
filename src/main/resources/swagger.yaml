@@ -9,9 +9,53 @@ tags:
     description: Endpoints de gestión de tags
   - name: spaces
     description: Endpoints de gestión de spaces
+  - name: voice-notes
+    description: Endpoints de gestión voice notes
 security:
   - bearerAuth: []
 paths:
+  /voice-notes:
+    post:
+      summary: upload a new voice note
+      operationId: uploadNoteVoice
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Archivo MP3
+                spaceId:
+                  type: integer
+                  format: int64
+                nombre:
+                  type: string
+                  example: nombre de prueba
+                description:
+                  type: string
+                  example: esto es una descripcion generica
+              required:
+                - file
+                - spaceId
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - voice-notes
   /spaces/user-space-role:
     post:
       summary: create a new user space role

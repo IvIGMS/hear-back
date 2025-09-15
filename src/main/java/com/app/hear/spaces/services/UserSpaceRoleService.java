@@ -57,7 +57,10 @@ public class UserSpaceRoleService {
     getSpaceById(spaceId);
     return userSpaceRoleRepository
         .findByUserIdAndSpaceId(userId, spaceId)
-        .orElseThrow(() -> new NotFoundException("El user " + userId + " no tiene permisos sobre el space " + spaceId));
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "El user " + userId + " no tiene permisos sobre el space " + spaceId));
   }
 
   public SpaceEntity getSpaceById(Long spaceId) {

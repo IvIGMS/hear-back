@@ -3,7 +3,7 @@ package com.app.hear.security.dao.models.entities;
 import com.app.hear.common.exceptions.utils.AuditableEntity;
 import com.app.hear.security.dao.models.enums.RoleUserEnum;
 import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
-import com.app.hear.voiceNotes.dao.models.entities.VoiceNote;
+import com.app.hear.voiceNotes.dao.models.entities.VoiceNoteEntity;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -39,7 +39,7 @@ public class UserEntity extends AuditableEntity {
   private List<UserSpaceRole> spaceRoles;
 
   @OneToMany(mappedBy = "uploadedBy")
-  private List<VoiceNote> voiceNotes;
+  private List<VoiceNoteEntity> voiceNotes;
 
   @Column(nullable = false)
   private Boolean isActive = true;
