@@ -46,11 +46,12 @@ public abstract class ControllerUtils {
     return ControllerUtilsConstants.USER_ROLE.equals(getRole());
   }
 
-  public static ResponseEntity.BodyBuilder responseOkPagination(ResponseEntity.BodyBuilder builder, Page<?> page) {
+  public static ResponseEntity.BodyBuilder responseOkPagination(
+      ResponseEntity.BodyBuilder builder, Page<?> page) {
     return builder
-            .header("X-Total-Count", String.valueOf(page.getTotalElements()))
-            .header("X-Total-Pages", String.valueOf(page.getTotalPages()))
-            .header("X-Page-Number", String.valueOf(page.getNumber()))
-            .header("X-Page-Size", String.valueOf(page.getSize()));
+        .header("X-Total-Count", String.valueOf(page.getTotalElements()))
+        .header("X-Total-Pages", String.valueOf(page.getTotalPages()))
+        .header("X-Page-Number", String.valueOf(page.getNumber()))
+        .header("X-Page-Size", String.valueOf(page.getSize()));
   }
 }

@@ -1,6 +1,7 @@
 package com.app.hear.voiceNotes.services;
 
 import com.app.hear.common.exceptions.ConflictException;
+import com.app.hear.common.exceptions.NotFoundException;
 import com.app.hear.model.VoiceNoteDTO;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
 import com.app.hear.spaces.services.SpaceService;
@@ -8,8 +9,11 @@ import com.app.hear.spaces.services.UserSpaceRoleService;
 import com.app.hear.users.services.UserService;
 import com.app.hear.voiceNotes.dao.models.entities.VoiceNoteEntity;
 import com.app.hear.voiceNotes.dao.repositories.VoiceNoteRepository;
+import com.app.hear.voiceNotes.dtos.StreamingResponse;
 import com.mpatric.mp3agic.Mp3File;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,6 +23,8 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,5 +129,52 @@ public class VoiceNoteService {
         voiceNoteRepository.getVoiceNotes(spaceName, pageable);
 
     return voiceNoteEntities.map(vn -> modelMapper.map(vn, VoiceNoteDTO.class));
+  }
+
+  public StreamingResponse getVoiceNoteStream(Long voiceNoteId, String rangeHeader)
+      throws IOException {
+    VoiceNoteEntity voiceNoteEntity =
+        voiceNoteRepository
+            .findById(voiceNoteId)
+            .orElseThrow(() -> new NotFoundException("Nota de voz no encontrada"));
+
+    Path filePath = Paths.get(voiceNoteEntity.getStoragePath());
+    if (!Files.exists(filePath)) {
+      throw new NotFoundException("Archivo no encontrado en el servidor");
+    }
+
+    File file = filePath.toFile();
+    long fileLength = file.length();
+
+    // Caso sin Range: devolvemos el archivo completo
+    if (rangeHeader == null) {
+      return StreamingResponse.builder()
+          .resource(new FileSystemResource(file))
+          .contentLength(fileLength)
+          .partial(false)
+          .build();
+    }
+
+    // Caso con Range
+    String[] ranges = rangeHeader.replace("bytes=", "").split("-");
+    long start = Long.parseLong(ranges[0]);
+    long end =
+        (ranges.length > 1 && !ranges[1].isEmpty()) ? Long.parseLong(ranges[1]) : fileLength - 1;
+
+    if (end >= fileLength) {
+      end = fileLength - 1;
+    }
+
+    long contentLength = end - start + 1;
+
+    InputStream inputStream = Files.newInputStream(file.toPath());
+    inputStream.skip(start);
+
+    return StreamingResponse.builder()
+        .resource(new InputStreamResource(inputStream))
+        .contentLength(contentLength)
+        .contentRange("bytes " + start + "-" + end + "/" + fileLength)
+        .partial(true)
+        .build();
   }
 }
