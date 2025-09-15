@@ -1,6 +1,7 @@
 package com.app.hear.voiceNotes.services;
 
 import com.app.hear.common.exceptions.ConflictException;
+import com.app.hear.model.VoiceNoteDTO;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
 import com.app.hear.spaces.services.SpaceService;
 import com.app.hear.spaces.services.UserSpaceRoleService;
@@ -17,6 +18,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +32,7 @@ public class VoiceNoteService {
   private final SpaceService spaceService;
   private final UserService userService;
   private final UserSpaceRoleService userSpaceRoleService;
+  private final ModelMapper modelMapper;
 
   @Transactional
   public void uploadNoteVoice(
@@ -105,5 +109,19 @@ public class VoiceNoteService {
     } catch (NoSuchAlgorithmException e) {
       throw new RuntimeException("Error creando hash", e);
     }
+  }
+
+  public Page<VoiceNoteDTO> getVoiceNotes(
+      Integer pageNumberQueryParam,
+      Integer pageSizeQueryParam,
+      String sortByQueryParam,
+      String spaceName) {
+    Pageable pageable =
+        PageRequest.of(pageNumberQueryParam - 1, pageSizeQueryParam, Sort.by(sortByQueryParam));
+
+    Page<VoiceNoteEntity> voiceNoteEntities =
+        voiceNoteRepository.getVoiceNotes(spaceName, pageable);
+
+    return voiceNoteEntities.map(vn -> modelMapper.map(vn, VoiceNoteDTO.class));
   }
 }

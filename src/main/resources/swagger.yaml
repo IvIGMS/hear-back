@@ -15,6 +15,29 @@ security:
   - bearerAuth: []
 paths:
   /voice-notes:
+    get:
+      summary: obtener voiceNotes
+      operationId: getVoiceNotes
+      parameters:
+        - $ref: '#/components/parameters/pageNumberQueryParam'
+        - $ref: '#/components/parameters/pageSizeQueryParam'
+        - $ref: '#/components/parameters/sortByQueryParam'
+        - $ref: '#/components/parameters/spaceNameQueryParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/VoiceNoteResponseList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - voice-notes
     post:
       summary: upload a new voice note
       operationId: uploadNoteVoice
@@ -326,6 +349,12 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/sortByQueryParam'
+    spaceNameQueryParam:
+      name: spaceNameQueryParam
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/spaceNameQueryParam'
     linkedCodePathParam:
       name: linkedCodePathParam
       in: path
@@ -361,6 +390,14 @@ components:
         type: integer
         format: int64
   responses:
+    VoiceNoteResponseList:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/VoiceNoteDTO'
     UserSpaceRoleResponse:
       description: OK.
       content:
@@ -546,6 +583,24 @@ components:
           $ref: '#/components/schemas/genericId'
         role:
           $ref: '#/components/schemas/RoleUserSpace'
+    VoiceNoteDTO:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/genericId'
+        nombre:
+          type: string
+          example: 'Francisco'
+        description:
+          type: string
+          example: 'Esto es una prueba de descripcion'
+        duration:
+          type: integer
+          example: 45
+        uploadedById:
+          $ref: '#/components/schemas/genericId'
+        spaceId:
+          $ref: '#/components/schemas/genericId'
     NotificationDto:
       type: object
       properties:
@@ -734,6 +789,9 @@ components:
     sortByQueryParam:
       type: string
       example: "productName"
+    spaceNameQueryParam:
+      type: string
+      example: "universe"
     pageNumberQueryParam:
       title: example
       description: example

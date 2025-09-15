@@ -5,6 +5,8 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 public abstract class ControllerUtils {
@@ -42,5 +44,13 @@ public abstract class ControllerUtils {
 
   protected boolean checkIsUser() {
     return ControllerUtilsConstants.USER_ROLE.equals(getRole());
+  }
+
+  public static ResponseEntity.BodyBuilder responseOkPagination(ResponseEntity.BodyBuilder builder, Page<?> page) {
+    return builder
+            .header("X-Total-Count", String.valueOf(page.getTotalElements()))
+            .header("X-Total-Pages", String.valueOf(page.getTotalPages()))
+            .header("X-Page-Number", String.valueOf(page.getNumber()))
+            .header("X-Page-Size", String.valueOf(page.getSize()));
   }
 }
