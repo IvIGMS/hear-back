@@ -11,6 +11,7 @@ import com.app.hear.voiceNotes.services.VoiceNoteService;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
@@ -69,7 +71,7 @@ public class VoiceNoteController extends ControllerUtils implements VoiceNotesAp
           .body(stream.getResource());
 
     } catch (IOException e) {
-      System.out.println("QUe no esta cojones");
+      log.error("Se ha producido un error al obtener el recurso con id {}", id);
       return null;
     }
   }
