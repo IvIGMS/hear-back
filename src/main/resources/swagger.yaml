@@ -640,6 +640,9 @@ components:
         duration:
           type: integer
           example: 45
+        spaceName:
+          type: string
+          example: 'universe'
         uploadedById:
           $ref: '#/components/schemas/genericId'
         spaceId:
@@ -846,7 +849,7 @@ components:
       title: example
       description: example
       type: integer
-      minimum: 10
+      minimum: 5
       maximum: 500
       example: 1
     nameQueryParam:

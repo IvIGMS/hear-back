@@ -1,5 +1,7 @@
 package com.app.hear.common.exceptions.mappers;
 
+import com.app.hear.model.VoiceNoteDTO;
+import com.app.hear.voiceNotes.dao.models.entities.VoiceNoteEntity;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import org.modelmapper.Converter;
@@ -39,8 +41,11 @@ public class ModelMapperConfig {
     mapper.addConverter(zonedToOffset);
     mapper.addConverter(offsetToZoned);
 
-    //        mapper.typeMap(SubscriptionEntity.class, SubscriptionDTO.class).addMappings(m -> {
-    //            m.map(src -> src.getUser().getId(), SubscriptionDTO::setUserId);
-    //        });
+    mapper
+        .typeMap(VoiceNoteEntity.class, VoiceNoteDTO.class)
+        .addMappings(
+            m -> {
+              m.map(src -> src.getSpace().getName(), VoiceNoteDTO::setSpaceName);
+            });
   }
 }
