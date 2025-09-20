@@ -66,6 +66,7 @@ paths:
         - $ref: '#/components/parameters/pageSizeQueryParam'
         - $ref: '#/components/parameters/sortByQueryParam'
         - $ref: '#/components/parameters/spaceNameQueryParam'
+        - $ref: '#/components/parameters/voiceNoteNameQueryParam'
       responses:
         '200':
           $ref: '#/components/responses/VoiceNoteResponseList'
@@ -398,6 +399,12 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/spaceNameQueryParam'
+    voiceNoteNameQueryParam:
+      name: voiceNoteNameQueryParam
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/voiceNoteNameQueryParam'
     linkedCodePathParam:
       name: linkedCodePathParam
       in: path
@@ -838,6 +845,9 @@ components:
     spaceNameQueryParam:
       type: string
       example: "universe"
+    voiceNoteNameQueryParam:
+      type: string
+      example: "audio01"
     pageNumberQueryParam:
       title: example
       description: example

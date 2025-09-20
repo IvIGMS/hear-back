@@ -44,10 +44,11 @@ public class VoiceNoteController extends ControllerUtils implements VoiceNotesAp
       Integer pageNumberQueryParam,
       Integer pageSizeQueryParam,
       String sortByQueryParam,
-      String spaceNameQueryParam) {
+      String spaceNameQueryParam,
+      String voiceNoteNameQueryParam) {
     Page<VoiceNoteDTO> results =
         service.getVoiceNotes(
-            pageNumberQueryParam, pageSizeQueryParam, sortByQueryParam, spaceNameQueryParam);
+            pageNumberQueryParam, pageSizeQueryParam, sortByQueryParam, spaceNameQueryParam, voiceNoteNameQueryParam);
 
     return responseOkPagination(ResponseEntity.ok(), results).body(results.getContent());
   }

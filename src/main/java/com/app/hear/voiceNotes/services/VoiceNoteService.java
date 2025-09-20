@@ -121,12 +121,13 @@ public class VoiceNoteService {
       Integer pageNumberQueryParam,
       Integer pageSizeQueryParam,
       String sortByQueryParam,
-      String spaceName) {
+      String spaceName,
+      String voiceNoteName) {
     Pageable pageable =
         PageRequest.of(pageNumberQueryParam - 1, pageSizeQueryParam, Sort.by(sortByQueryParam));
 
     Page<VoiceNoteEntity> voiceNoteEntities =
-        voiceNoteRepository.getVoiceNotes(spaceName, pageable);
+        voiceNoteRepository.getVoiceNotes(spaceName, voiceNoteName, pageable);
 
     return voiceNoteEntities.map(vn -> modelMapper.map(vn, VoiceNoteDTO.class));
   }
