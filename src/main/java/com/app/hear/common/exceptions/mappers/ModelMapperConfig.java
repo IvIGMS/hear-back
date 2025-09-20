@@ -49,6 +49,7 @@ public class ModelMapperConfig {
         .addMappings(
             m -> {
               m.map(src -> src.getSpace().getName(), VoiceNoteDTO::setSpaceName);
+              m.map(src -> src.getSpace().getColor().getCode(), VoiceNoteDTO::setCodeSpaceColor);
               m.using(new TagEntityListToStringListConverter())
                   .map(src -> src.getSpace().getTags(), VoiceNoteDTO::setTags);
             });

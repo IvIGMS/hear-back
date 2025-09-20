@@ -1,13 +1,18 @@
 package com.app.hear.spaces.services;
 
+import com.app.hear.catalog.dao.models.CatalogColorEntity;
+import com.app.hear.catalog.services.CatalogColorService;
 import com.app.hear.common.exceptions.ConflictException;
 import com.app.hear.common.exceptions.NotFoundException;
+import com.app.hear.model.ColorDTO;
 import com.app.hear.model.RoleUserSpace;
 import com.app.hear.model.SpaceCreateDTO;
 import com.app.hear.model.SpaceDTO;
 import com.app.hear.model.UserSpaceRoleRequestDTO;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
 import com.app.hear.spaces.dao.repositories.SpaceRepository;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,6 +23,7 @@ public class SpaceService {
   private final SpaceRepository spaceRepository;
   private final ModelMapper modelMapper;
   private final UserSpaceRoleService userSpaceRoleService;
+  private final CatalogColorService catalogColorService;
 
   public SpaceDTO createSpace(SpaceCreateDTO spaceCreateDTO, Long ownerId) {
     // Crear el space
@@ -29,6 +35,9 @@ public class SpaceService {
                   "Space with name " + spaceCreateDTO.getName() + " already exists");
             });
     SpaceEntity spaceEntity = modelMapper.map(spaceCreateDTO, SpaceEntity.class);
+    // Set color
+    spaceEntity.setColor(getRandomColor());
+    // Guardar
     SpaceEntity savedSpace = spaceRepository.save(spaceEntity);
     // Asignar rol de admin a quien lo crea
     userSpaceRoleService.createUserSpaceRole(
@@ -54,5 +63,13 @@ public class SpaceService {
     return spaceRepository
         .findById(spaceId)
         .orElseThrow(() -> new NotFoundException("Space with id " + spaceId + " not found"));
+  }
+
+  public CatalogColorEntity getRandomColor() {
+    List<String> allColors =
+        catalogColorService.getAllColors().stream().map(ColorDTO::getCode).toList();
+
+    String color = allColors.get(ThreadLocalRandom.current().nextInt(allColors.size()));
+    return catalogColorService.getColorEntityByCode(color);
   }
 }

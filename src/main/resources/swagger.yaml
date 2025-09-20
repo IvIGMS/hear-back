@@ -732,6 +732,9 @@ components:
           items:
             type: string
             example: 'trabajo'
+        codeSpaceColor:
+          type: string
+          example: 'AZ'
         uploadedById:
           $ref: '#/components/schemas/genericId'
         spaceId:

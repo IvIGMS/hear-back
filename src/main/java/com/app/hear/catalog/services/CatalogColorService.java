@@ -28,4 +28,11 @@ public class CatalogColorService {
                 () -> new NotFoundException("No se ha encontrado el color con codigo: " + code));
     return modelMapper.map(catalogColorEntity, ColorDTO.class);
   }
+
+  public CatalogColorEntity getColorEntityByCode(String code) {
+    return catalogColorRepository
+        .findByCode(code)
+        .orElseThrow(
+            () -> new NotFoundException("No se ha encontrado el color con codigo: " + code));
+  }
 }
