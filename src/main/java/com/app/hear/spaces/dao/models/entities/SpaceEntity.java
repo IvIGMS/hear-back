@@ -1,5 +1,6 @@
 package com.app.hear.spaces.dao.models.entities;
 
+import com.app.hear.catalog.dao.models.CatalogColorEntity;
 import com.app.hear.common.exceptions.utils.AuditableEntity;
 import com.app.hear.tags.dao.models.entities.TagEntity;
 import com.app.hear.voiceNotes.dao.models.entities.VoiceNoteEntity;
@@ -39,4 +40,8 @@ public class SpaceEntity extends AuditableEntity {
       joinColumns = @JoinColumn(name = "space_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private List<TagEntity> tags;
+
+  @ManyToOne
+  @JoinColumn(name = "color_id", nullable = false)
+  private CatalogColorEntity color;
 }

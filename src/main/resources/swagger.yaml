@@ -14,6 +14,53 @@ tags:
 security:
   - bearerAuth: []
 paths:
+  /colors:
+    get:
+      summary: get all colors
+      operationId: getAllColors
+      responses:
+        '200':
+          $ref: '#/components/responses/ColorListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - colors
+
+  /colors/{code}:
+    get:
+      summary: get color by code
+      operationId: getColorByCode
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "RO"
+      responses:
+        '200':
+          $ref: '#/components/responses/ColorResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - colors
+
   /voice-notes/{id}/stream:
     get:
       summary: Stream de una nota de voz (MP3)
@@ -440,6 +487,20 @@ components:
         type: integer
         format: int64
   responses:
+    ColorListResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ColorDTO'
+    ColorResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ColorDTO'
     VoiceNoteResponseList:
       description: OK.
       content:
@@ -622,6 +683,22 @@ components:
                   One or more fields are invalid. See details for more information.
                 instance: 'https://api.example.com/problems/validation-error/12345'
   schemas:
+    ColorDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Red"
+        hexCode:
+          type: string
+          example: "#FF0000"
+        code:
+          type: string
+          example: "RO"
     UserSpaceRoleDTO:
       type: object
       properties:
