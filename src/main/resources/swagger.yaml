@@ -650,6 +650,11 @@ components:
         spaceName:
           type: string
           example: 'universe'
+        tags:
+          type: array
+          items:
+            type: string
+            example: 'trabajo'
         uploadedById:
           $ref: '#/components/schemas/genericId'
         spaceId:

@@ -1,5 +1,6 @@
 package com.app.hear.common.exceptions.mappers;
 
+import com.app.hear.common.exceptions.mappers.converters.TagEntityListToStringListConverter;
 import com.app.hear.model.VoiceNoteDTO;
 import com.app.hear.voiceNotes.dao.models.entities.VoiceNoteEntity;
 import java.time.OffsetDateTime;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ModelMapperConfig {
 
+    // todo: sacar estos converters de aqui
   private final Converter<ZonedDateTime, OffsetDateTime> zonedToOffset =
       ctx -> {
         ZonedDateTime source = ctx.getSource();
@@ -40,12 +42,15 @@ public class ModelMapperConfig {
 
     mapper.addConverter(zonedToOffset);
     mapper.addConverter(offsetToZoned);
+    mapper.addConverter(new TagEntityListToStringListConverter());
 
     mapper
         .typeMap(VoiceNoteEntity.class, VoiceNoteDTO.class)
         .addMappings(
             m -> {
               m.map(src -> src.getSpace().getName(), VoiceNoteDTO::setSpaceName);
+              m.using(new TagEntityListToStringListConverter())
+                      .map(src -> src.getSpace().getTags(), VoiceNoteDTO::setTags);
             });
   }
 }
