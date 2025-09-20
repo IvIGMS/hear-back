@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ModelMapperConfig {
 
-    // todo: sacar estos converters de aqui
+  // todo: sacar estos converters de aqui
   private final Converter<ZonedDateTime, OffsetDateTime> zonedToOffset =
       ctx -> {
         ZonedDateTime source = ctx.getSource();
@@ -50,7 +50,7 @@ public class ModelMapperConfig {
             m -> {
               m.map(src -> src.getSpace().getName(), VoiceNoteDTO::setSpaceName);
               m.using(new TagEntityListToStringListConverter())
-                      .map(src -> src.getSpace().getTags(), VoiceNoteDTO::setTags);
+                  .map(src -> src.getSpace().getTags(), VoiceNoteDTO::setTags);
             });
   }
 }

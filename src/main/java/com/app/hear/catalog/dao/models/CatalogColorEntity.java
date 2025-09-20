@@ -15,16 +15,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CatalogColorEntity extends AuditableEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String name; // e.g., "Red"
+  @Column(nullable = false, unique = true, length = 50)
+  private String name; // e.g., "Red"
 
-    @Column(nullable = false, length = 7)
-    private String hexCode; // e.g., "#FF0000"
+  @Column(nullable = false, length = 7)
+  private String hexCode; // e.g., "#FF0000"
 
-    @Column(nullable = false, length = 2, unique = true)
-    private String code; // e.g., "RO", "AZ"
+  @Column(nullable = false, length = 2, unique = true)
+  private String code; // e.g., "RO", "AZ"
 }

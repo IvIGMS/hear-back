@@ -19,8 +19,7 @@ public interface VoiceNoteRepository extends JpaRepository<VoiceNoteEntity, Long
                 AND (:voiceNoteName IS NULL OR LOWER(vne.nombre) LIKE CONCAT('%', LOWER(CAST(:voiceNoteName AS string)), '%'))
             """)
   Page<VoiceNoteEntity> getVoiceNotes(
-          @Param("spaceName") String spaceName,
-          @Param("voiceNoteName") String voiceNoteName,
-          Pageable pageable
-  );
+      @Param("spaceName") String spaceName,
+      @Param("voiceNoteName") String voiceNoteName,
+      Pageable pageable);
 }
