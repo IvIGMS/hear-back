@@ -5,6 +5,7 @@ import static com.app.hear.common.exceptions.utils.ControllerUtilsConstants.STRI
 import com.app.hear.api.SpacesApi;
 import com.app.hear.common.exceptions.utils.ControllerUtils;
 import com.app.hear.common.exceptions.utils.UnauthorizedException;
+import com.app.hear.model.*;
 import com.app.hear.model.SpaceCreateDTO;
 import com.app.hear.model.SpaceDTO;
 import com.app.hear.model.UserSpaceRoleDTO;
@@ -48,5 +49,15 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
     UserSpaceRoleDTO userSpaceRoleDTO =
         userSpaceRoleService.createUserSpaceRole(userSpaceRoleRequestDTO);
     return ResponseEntity.created(createLocation(userSpaceRoleDTO.getId())).body(userSpaceRoleDTO);
+  }
+
+  @Override
+  public ResponseEntity<com.app.hear.model.SpaceListDTO> getSpacesByUser() {
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long userId = getAllClaims().get("user_id", Long.class);
+
+    return ResponseEntity.ok(spaceService.getSpacesByUser(userId));
   }
 }

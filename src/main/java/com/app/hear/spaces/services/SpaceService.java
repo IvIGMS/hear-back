@@ -10,7 +10,10 @@ import com.app.hear.model.SpaceCreateDTO;
 import com.app.hear.model.SpaceDTO;
 import com.app.hear.model.UserSpaceRoleRequestDTO;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
+import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
+import com.app.hear.spaces.dao.models.enums.RoleUserSpace.*;
 import com.app.hear.spaces.dao.repositories.SpaceRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
@@ -71,5 +74,34 @@ public class SpaceService {
 
     String color = allColors.get(ThreadLocalRandom.current().nextInt(allColors.size()));
     return catalogColorService.getColorEntityByCode(color);
+  }
+
+  public com.app.hear.model.SpaceListDTO getSpacesByUser(Long userId) {
+    List<SpaceEntity> list = spaceRepository.getSpacesByUser(userId);
+    List<SpaceEntity> spaceMember = new ArrayList<>();
+    List<SpaceEntity> spaceAdmin = new ArrayList<>();
+
+    list.forEach(
+        space -> {
+          UserSpaceRole rolCurrentUser =
+              space.getUserRoles().stream()
+                  .filter(role -> role.getUser().getId().equals(userId))
+                  .findFirst()
+                  .orElseThrow(() -> new NotFoundException("User not found in this space"));
+          if (rolCurrentUser.getRole().name().equals("ADMIN")) {
+            spaceAdmin.add(space);
+          } else if (rolCurrentUser.getRole().name().equals("MEMBER")) {
+            spaceMember.add(space);
+          }
+        });
+    List<SpaceDTO> spaceAdminDto =
+        spaceAdmin.stream().map(space -> modelMapper.map(space, SpaceDTO.class)).toList();
+    List<SpaceDTO> spaceMemberDto =
+        spaceMember.stream().map(space -> modelMapper.map(space, SpaceDTO.class)).toList();
+
+    return com.app.hear.model.SpaceListDTO.builder()
+        .admin(spaceAdminDto)
+        .member(spaceMemberDto)
+        .build();
   }
 }

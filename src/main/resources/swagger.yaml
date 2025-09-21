@@ -192,6 +192,24 @@ paths:
       tags:
         - spaces
   /spaces:
+    get:
+      summary: get all spaces
+      operationId: getSpacesByUser
+      responses:
+        '200':
+          $ref: '#/components/responses/SpaceListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - spaces
     post:
       summary: create a new space
       operationId: createSpace
@@ -487,6 +505,12 @@ components:
         type: integer
         format: int64
   responses:
+    SpaceListResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SpaceListDTO'
     ColorListResponse:
       description: OK.
       content:
@@ -839,6 +863,17 @@ components:
         name:
           type: string
           example: universidad
+    SpaceListDTO:
+      type: object
+      properties:
+        admin:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpaceDTO'
+        member:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpaceDTO'
     SpaceDTO:
       type: object
       properties:
