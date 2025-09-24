@@ -5,7 +5,6 @@ import static com.app.hear.common.exceptions.utils.ControllerUtilsConstants.STRI
 import com.app.hear.api.SpacesApi;
 import com.app.hear.common.exceptions.utils.ControllerUtils;
 import com.app.hear.common.exceptions.utils.UnauthorizedException;
-import com.app.hear.model.*;
 import com.app.hear.model.SpaceCreateDTO;
 import com.app.hear.model.SpaceDTO;
 import com.app.hear.model.UserSpaceRoleDTO;

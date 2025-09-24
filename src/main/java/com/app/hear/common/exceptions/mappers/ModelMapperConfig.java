@@ -1,7 +1,9 @@
 package com.app.hear.common.exceptions.mappers;
 
 import com.app.hear.common.exceptions.mappers.converters.TagEntityListToStringListConverter;
+import com.app.hear.model.SpaceDTO;
 import com.app.hear.model.VoiceNoteDTO;
+import com.app.hear.spaces.dao.models.entities.SpaceEntity;
 import com.app.hear.voiceNotes.dao.models.entities.VoiceNoteEntity;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
@@ -52,6 +54,12 @@ public class ModelMapperConfig {
               m.map(src -> src.getSpace().getColor().getCode(), VoiceNoteDTO::setCodeSpaceColor);
               m.using(new TagEntityListToStringListConverter())
                   .map(src -> src.getSpace().getTags(), VoiceNoteDTO::setTags);
+            });
+    mapper
+        .typeMap(SpaceEntity.class, SpaceDTO.class)
+        .addMappings(
+            m -> {
+              m.map(src -> src.getColor().getCode(), SpaceDTO::setColorCode);
             });
   }
 }

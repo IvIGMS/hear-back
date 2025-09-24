@@ -887,6 +887,9 @@ components:
         description:
           type: string
           example: description
+        colorCode:
+          type: string
+          example: 'AZ'
     TagSpaceRequestDTO:
       type: object
       properties:
