@@ -954,6 +954,14 @@ components:
         colorCode:
           type: string
           example: 'AZ'
+        totalVoiceNotes:
+          type: integer
+          example: 7
+        tags:
+          type: array
+          items:
+            type: string
+            example: 'trabajo'
     TagSpaceRequestDTO:
       type: object
       properties:
