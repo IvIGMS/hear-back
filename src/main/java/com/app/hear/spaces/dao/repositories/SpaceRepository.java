@@ -16,4 +16,6 @@ public interface SpaceRepository extends JpaRepository<SpaceEntity, Long> {
           + "INNER JOIN s.userRoles ur "
           + "WHERE ur.user.id = :userId")
   List<SpaceEntity> getSpacesByUser(@Param("userId") Long userId);
+
+  Optional<SpaceEntity> findByVoiceNotesId(Long voiceNoteId);
 }

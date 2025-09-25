@@ -80,4 +80,14 @@ public class VoiceNoteController extends ControllerUtils implements VoiceNotesAp
       return null;
     }
   }
+
+  @Override
+  public ResponseEntity<Void> deleteVoiceNoteById(Long voiceNoteId) {
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
+    service.deleteVoiceNoteById(voiceNoteId, ownerId);
+    return ResponseEntity.noContent().build();
+  }
 }

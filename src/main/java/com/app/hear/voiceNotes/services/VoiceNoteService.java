@@ -4,6 +4,8 @@ import com.app.hear.common.exceptions.ConflictException;
 import com.app.hear.common.exceptions.NotFoundException;
 import com.app.hear.model.VoiceNoteDTO;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
+import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
+import com.app.hear.spaces.dao.models.enums.RoleUserSpace;
 import com.app.hear.spaces.services.SpaceService;
 import com.app.hear.spaces.services.UserSpaceRoleService;
 import com.app.hear.users.services.UserService;
@@ -14,9 +16,7 @@ import com.mpatric.mp3agic.Mp3File;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -78,6 +78,37 @@ public class VoiceNoteService {
       throw new ConflictException("La duración del audio no puede ser de mas de 90 segundos");
     }
     return duration;
+  }
+
+  private void deleteFile(String spaceName, String nombreAudio) throws IOException {
+    String userHome = System.getProperty("user.home");
+    Path folderPath = Paths.get(userHome, "audio_data", spaceName);
+    Path filePath = folderPath.resolve(nombreAudio);
+
+    // Borrar archivo
+    Files.deleteIfExists(filePath);
+
+    // Vemos si hay archivos ocultos
+    boolean hasVisibleFiles = false;
+    try (DirectoryStream<Path> entries = Files.newDirectoryStream(folderPath)) {
+      for (Path entry : entries) {
+        String name = entry.getFileName().toString();
+        if (!name.startsWith(".")) { // si no es oculto
+          hasVisibleFiles = true;
+          break;
+        }
+      }
+    }
+
+    // Si hay los borramos
+    if (!hasVisibleFiles) {
+      try (DirectoryStream<Path> entries = Files.newDirectoryStream(folderPath)) {
+        for (Path entry : entries) {
+          Files.deleteIfExists(entry);
+        }
+      }
+      Files.delete(folderPath);
+    }
   }
 
   private String saveFile(MultipartFile file, String spaceName, String nombreAudio)
@@ -184,5 +215,32 @@ public class VoiceNoteService {
     List<VoiceNoteEntity> voiceNoteEntities =
         voiceNoteRepository.getVoiceNotesBySpaceId(spaceId, voiceNoteNameQueryParam);
     return voiceNoteEntities.stream().map(vn -> modelMapper.map(vn, VoiceNoteDTO.class)).toList();
+  }
+
+  @Transactional
+  public void deleteVoiceNoteById(Long voiceNoteId, Long ownerId) {
+    VoiceNoteEntity voiceNoteEntity =
+        voiceNoteRepository
+            .findById(voiceNoteId)
+            .orElseThrow(
+                () -> new NotFoundException("El voice note con id " + voiceNoteId + " no existe."));
+    SpaceEntity space = spaceService.getSpaceEntityByVoiceNoteId(voiceNoteId);
+    UserSpaceRole userSpaceRole =
+        userSpaceRoleService.getUserSpaceRoleByUserIdAndSpaceId(ownerId, space.getId());
+    if (userSpaceRole.getRole().name().equals(RoleUserSpace.ADMIN.name())) {
+      voiceNoteRepository.deleteById(voiceNoteId);
+      try {
+        deleteFile(space.getName(), voiceNoteEntity.getNombre());
+      } catch (NoSuchFileException e) {
+        throw new ConflictException(
+            "No se ha podido borrar el archivo porque no existe en el gestor documental");
+      } catch (Exception e) {
+        throw new ConflictException(
+            "No se ha podido borrar el archivo del gestor documental. Error desconocido");
+      }
+    } else {
+      throw new ConflictException(
+          "No tienes perimoss para borrar este audio, eres member, necesitas ser admin");
+    }
   }
 }

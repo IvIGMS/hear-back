@@ -103,4 +103,10 @@ public class SpaceService {
         .member(spaceMemberDto)
         .build();
   }
+
+  public SpaceEntity getSpaceEntityByVoiceNoteId(Long voiceNoteId) {
+    return spaceRepository
+        .findByVoiceNotesId(voiceNoteId)
+        .orElseThrow(() -> new NotFoundException("Space not found by this voiceNoteId"));
+  }
 }

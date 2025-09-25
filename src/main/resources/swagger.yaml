@@ -60,6 +60,27 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
       tags:
         - colors
+  /voice-notes/{voiceNoteId}:
+    delete:
+      summary: delete voice note by an id
+      operationId: deleteVoiceNoteById
+      parameters:
+        - $ref: '#/components/parameters/voiceNoteId'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - voice-notes
 
   /voice-notes/{id}/stream:
     get:
@@ -452,6 +473,12 @@ components:
         $ref: '#/components/schemas/genericId'
     spaceId:
       name: spaceId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/genericId'
+    voiceNoteId:
+      name: voiceNoteId
       in: path
       required: true
       schema:
