@@ -1,6 +1,7 @@
 package com.app.hear.common.exceptions.mappers;
 
 import com.app.hear.common.exceptions.mappers.converters.TagEntityListToStringListConverter;
+import com.app.hear.common.exceptions.mappers.converters.VoiceNoteEntityListToIntegerConverter;
 import com.app.hear.model.SpaceDTO;
 import com.app.hear.model.VoiceNoteDTO;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
@@ -45,6 +46,7 @@ public class ModelMapperConfig {
     mapper.addConverter(zonedToOffset);
     mapper.addConverter(offsetToZoned);
     mapper.addConverter(new TagEntityListToStringListConverter());
+    mapper.addConverter(new VoiceNoteEntityListToIntegerConverter());
 
     mapper
         .typeMap(VoiceNoteEntity.class, VoiceNoteDTO.class)
@@ -60,6 +62,7 @@ public class ModelMapperConfig {
         .addMappings(
             m -> {
               m.map(src -> src.getColor().getCode(), SpaceDTO::setColorCode);
+              m.using(new VoiceNoteEntityListToIntegerConverter()).map(SpaceEntity::getVoiceNotes, SpaceDTO::setTotalVoiceNotes);
             });
   }
 }
