@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -177,5 +178,11 @@ public class VoiceNoteService {
         .contentRange("bytes " + start + "-" + end + "/" + fileLength)
         .partial(true)
         .build();
+  }
+
+  public List<VoiceNoteDTO> getVoiceNotesBySpaceId(Long spaceId, String voiceNoteNameQueryParam) {
+    List<VoiceNoteEntity> voiceNoteEntities =
+        voiceNoteRepository.getVoiceNotesBySpaceId(spaceId, voiceNoteNameQueryParam);
+    return voiceNoteEntities.stream().map(vn -> modelMapper.map(vn, VoiceNoteDTO.class)).toList();
   }
 }

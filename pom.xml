@@ -196,6 +196,9 @@
 								<interfaceOnly>true</interfaceOnly> <!-- Solo genera interfaces, no implementaciones -->
 								<useSpringBoot3>true</useSpringBoot3> <!-- Habilita soporte para Spring Boot 3.x -->
 								<useLombokAnnotations>true</useLombokAnnotations>
+								<fullyQualifiedNames>false</fullyQualifiedNames>
+								<useFullyQualifiedModelNames>false</useFullyQualifiedModelNames>
+								<sourceFolder>src/main/java</sourceFolder>
 								<additionalModelTypeAnnotations>
 									@lombok.Data
 									@lombok.NoArgsConstructor

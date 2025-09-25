@@ -191,6 +191,28 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
       tags:
         - spaces
+  /spaces/{spaceId}/voice-notes:
+    get:
+      summary: get a space by id fill of voice notes
+      operationId: getSpaceVoiceNotesById
+      parameters:
+        - $ref: '#/components/parameters/spaceId'
+        - $ref: '#/components/parameters/voiceNoteNameQueryParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/SpaceListVoiceNotesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - spaces
   /spaces:
     get:
       summary: get all spaces
@@ -505,6 +527,12 @@ components:
         type: integer
         format: int64
   responses:
+    SpaceListVoiceNotesResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SpaceListVoiceNotesDTO'
     SpaceListResponse:
       description: OK.
       content:
@@ -863,6 +891,15 @@ components:
         name:
           type: string
           example: universidad
+    SpaceListVoiceNotesDTO:
+      type: object
+      properties:
+        space:
+          $ref: '#/components/schemas/SpaceDTO'
+        voice-notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/VoiceNoteDTO'
     SpaceListDTO:
       type: object
       properties:

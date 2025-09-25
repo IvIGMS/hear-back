@@ -11,7 +11,6 @@ import com.app.hear.model.SpaceDTO;
 import com.app.hear.model.UserSpaceRoleRequestDTO;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
 import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
-import com.app.hear.spaces.dao.models.enums.RoleUserSpace.*;
 import com.app.hear.spaces.dao.repositories.SpaceRepository;
 import java.util.ArrayList;
 import java.util.List;

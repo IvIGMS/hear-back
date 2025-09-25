@@ -7,9 +7,12 @@ import com.app.hear.common.exceptions.utils.ControllerUtils;
 import com.app.hear.common.exceptions.utils.UnauthorizedException;
 import com.app.hear.model.SpaceCreateDTO;
 import com.app.hear.model.SpaceDTO;
+import com.app.hear.model.SpaceListDTO;
+import com.app.hear.model.SpaceListVoiceNotesDTO;
 import com.app.hear.model.UserSpaceRoleDTO;
 import com.app.hear.model.UserSpaceRoleRequestDTO;
 import com.app.hear.spaces.services.SpaceService;
+import com.app.hear.spaces.services.SpaceVoiceNoteService;
 import com.app.hear.spaces.services.UserSpaceRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SpaceController extends ControllerUtils implements SpacesApi {
   private final SpaceService spaceService;
   private final UserSpaceRoleService userSpaceRoleService;
+  private final SpaceVoiceNoteService spaceVoiceNoteService;
 
   @Override
   public ResponseEntity<SpaceDTO> createSpace(SpaceCreateDTO spaceCreateDTO) {
@@ -51,12 +55,23 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
   }
 
   @Override
-  public ResponseEntity<com.app.hear.model.SpaceListDTO> getSpacesByUser() {
+  public ResponseEntity<SpaceListDTO> getSpacesByUser() {
     if (!checkIsUser()) {
       throw new UnauthorizedException(STRING_NO_PREMISSIONS);
     }
     Long userId = getAllClaims().get("user_id", Long.class);
 
     return ResponseEntity.ok(spaceService.getSpacesByUser(userId));
+  }
+
+  @Override
+  public ResponseEntity<SpaceListVoiceNotesDTO> getSpaceVoiceNotesById(
+      Long spaceId, String voiceNoteNameQueryParam) {
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
+    return ResponseEntity.ok(
+        spaceVoiceNoteService.getSpaceVoiceNotesById(ownerId, spaceId, voiceNoteNameQueryParam));
   }
 }
