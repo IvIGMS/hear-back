@@ -11,9 +11,13 @@ import com.app.hear.spaces.dao.repositories.SpaceRepository;
 import com.app.hear.spaces.dao.repositories.UserSpaceRoleRepository;
 import com.app.hear.users.services.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserSpaceRoleService {
@@ -51,6 +55,17 @@ public class UserSpaceRoleService {
     UserSpaceRole savedUserSpaceRole = userSpaceRoleRepository.save(userSpaceRole);
 
     return modelMapper.map(savedUserSpaceRole, UserSpaceRoleDTO.class);
+  }
+
+  public void cleanBeforeDeleteASpace(Long spaceId) {
+    List<UserSpaceRole> spaceRoleToDelete = userSpaceRoleRepository.findBySpaceId(spaceId);
+    if(!spaceRoleToDelete.isEmpty()) {
+      spaceRoleToDelete.forEach(role -> {
+        userSpaceRoleRepository.deleteById(role.getId());
+      });
+    } else {
+      log.info("No hay ningún rol que limpiar en para este space");
+    }
   }
 
   public UserSpaceRole getUserSpaceRoleByUserIdAndSpaceId(Long userId, Long spaceId) {

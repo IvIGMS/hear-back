@@ -294,6 +294,26 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
       tags:
         - spaces
+    delete:
+      summary: delete a space by id
+      operationId: deleteSpaceById
+      parameters:
+        - $ref: '#/components/parameters/spaceId'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - spaces
   /tags/add-tag-space:
     patch:
       summary: add a tag to a space

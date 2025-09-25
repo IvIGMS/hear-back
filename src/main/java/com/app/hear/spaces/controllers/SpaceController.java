@@ -74,4 +74,14 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
     return ResponseEntity.ok(
         spaceVoiceNoteService.getSpaceVoiceNotesById(ownerId, spaceId, voiceNoteNameQueryParam));
   }
+
+  @Override
+  public ResponseEntity<Void> deleteSpaceById(Long spaceId) {
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
+    spaceService.deleteSpaceById(spaceId, ownerId);
+    return ResponseEntity.noContent().build();
+  }
 }
