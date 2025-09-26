@@ -114,17 +114,22 @@ public class SpaceService {
   @Transactional
   public void deleteSpaceById(Long spaceId, Long ownerId) {
     UserSpaceRole userSpaceRole =
-            userSpaceRoleService.getUserSpaceRoleByUserIdAndSpaceId(ownerId, spaceId);
-    if (userSpaceRole.getRole().name().equals(com.app.hear.spaces.dao.models.enums.RoleUserSpace.ADMIN.name())) {
+        userSpaceRoleService.getUserSpaceRoleByUserIdAndSpaceId(ownerId, spaceId);
+    if (userSpaceRole
+        .getRole()
+        .name()
+        .equals(com.app.hear.spaces.dao.models.enums.RoleUserSpace.ADMIN.name())) {
       SpaceEntity spaceEntity = getSpaceEntityById(spaceId);
-      if(!spaceEntity.getVoiceNotes().isEmpty()) {
-        throw new ConflictException("No se puede eliminar el space porque tiene audios vinculados. Elimina estos audios primero");
+      if (!spaceEntity.getVoiceNotes().isEmpty()) {
+        throw new ConflictException(
+            "No se puede eliminar el space porque tiene audios vinculados. Elimina estos audios primero");
       }
 
       userSpaceRoleService.cleanBeforeDeleteASpace(spaceId);
       spaceRepository.deleteById(spaceId);
     } else {
-      throw new ConflictException("No tienes perimos para borrar este space, eres member, necesitas ser admin");
+      throw new ConflictException(
+          "No tienes perimos para borrar este space, eres member, necesitas ser admin");
     }
   }
 }

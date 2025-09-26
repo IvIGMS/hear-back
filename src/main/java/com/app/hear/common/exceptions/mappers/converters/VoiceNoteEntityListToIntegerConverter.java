@@ -1,13 +1,12 @@
 package com.app.hear.common.exceptions.mappers.converters;
 
 import com.app.hear.voiceNotes.dao.models.entities.VoiceNoteEntity;
+import java.util.List;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 
-import java.util.List;
-
 public class VoiceNoteEntityListToIntegerConverter
-        implements Converter<List<VoiceNoteEntity>, Integer> {
+    implements Converter<List<VoiceNoteEntity>, Integer> {
 
   @Override
   public Integer convert(MappingContext<List<VoiceNoteEntity>, Integer> context) {

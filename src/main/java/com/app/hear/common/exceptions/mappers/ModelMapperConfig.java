@@ -62,7 +62,8 @@ public class ModelMapperConfig {
         .addMappings(
             m -> {
               m.map(src -> src.getColor().getCode(), SpaceDTO::setColorCode);
-              m.using(new VoiceNoteEntityListToIntegerConverter()).map(SpaceEntity::getVoiceNotes, SpaceDTO::setTotalVoiceNotes);
+              m.using(new VoiceNoteEntityListToIntegerConverter())
+                  .map(SpaceEntity::getVoiceNotes, SpaceDTO::setTotalVoiceNotes);
             });
   }
 }

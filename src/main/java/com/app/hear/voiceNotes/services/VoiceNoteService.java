@@ -47,17 +47,34 @@ public class VoiceNoteService {
     try {
       SpaceEntity space = spaceService.getSpaceEntityById(spaceId);
 
-      String nombreAuidoTransformed = nombreAudio + createHash() + ".mp3";
-      String path = saveFile(file, space.getName(), nombreAuidoTransformed);
+      // Guardar con el nombre original + hash + extensión original
+      String originalFilename = file.getOriginalFilename();
+      String extension =
+          originalFilename != null && originalFilename.contains(".")
+              ? originalFilename.substring(originalFilename.lastIndexOf("."))
+              : ".opus"; // por defecto .opus si no viene extensión
+
+      String nombreAudioTransformed = nombreAudio + createHash() + extension;
+      String path = saveFile(file, space.getName(), nombreAudioTransformed);
       log.info("El archivo se ha guardado correctamente en el Gestor Documental");
 
-      long duration = checkDuration(Paths.get(path));
+      Path audioPath = Paths.get(path);
+
+      // Si es .opus -> convertir a .mp3
+      if (extension.equalsIgnoreCase(".opus")) {
+        audioPath = convertOpusToMp3(audioPath);
+        // actualizar nombre y path porque ahora es mp3
+        nombreAudioTransformed = nombreAudioTransformed.replace(".opus", ".mp3");
+        path = audioPath.toString();
+      }
+
+      long duration = checkDuration(audioPath);
 
       userSpaceRoleService.getUserSpaceRoleByUserIdAndSpaceId(ownerId, spaceId);
 
       VoiceNoteEntity voiceNoteEntityToSave =
           VoiceNoteEntity.builder()
-              .nombre(nombreAuidoTransformed)
+              .nombre(nombreAudioTransformed)
               .description(description)
               .duration((int) duration)
               .storagePath(path)
@@ -69,6 +86,31 @@ public class VoiceNoteService {
     } catch (Exception e) {
       throw new RuntimeException("Error desconocido", e);
     }
+  }
+
+  private Path convertOpusToMp3(Path opusPath) throws Exception {
+    String mp3Path = opusPath.toString().replace(".opus", ".mp3");
+
+    ProcessBuilder pb =
+        new ProcessBuilder(
+            "ffmpeg",
+            "-y",
+            "-i",
+            opusPath.toString(),
+            "-acodec",
+            "libmp3lame",
+            "-q:a",
+            "2",
+            mp3Path);
+    pb.redirectErrorStream(true);
+    Process process = pb.start();
+    int exitCode = process.waitFor();
+
+    if (exitCode != 0) {
+      throw new RuntimeException("Error al convertir el archivo opus a mp3");
+    }
+    log.info("Conversión de opus a mp3 realizada correctamente: {}", mp3Path);
+    return Paths.get(mp3Path);
   }
 
   private long checkDuration(Path filePath) throws Exception {
