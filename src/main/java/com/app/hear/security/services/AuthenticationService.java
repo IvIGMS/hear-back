@@ -7,7 +7,11 @@ import com.app.hear.model.RegisterRequestDTO;
 import com.app.hear.model.RoleUser;
 import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.security.dao.models.enums.RoleUserEnum;
+import com.app.hear.users.dao.models.entities.UserConfigEntity;
+import com.app.hear.users.dao.models.enums.Tier;
 import com.app.hear.users.dao.repositories.UserRepository;
+import com.app.hear.users.services.UserConfigService;
+import com.app.hear.users.services.UserScopeService;
 import jakarta.transaction.Transactional;
 import java.security.SecureRandom;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,8 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final UserConfigService userConfigService;
+  private final UserScopeService userScopeService;
   private static final SecureRandom random = new SecureRandom();
 
   @Transactional
@@ -44,6 +50,14 @@ public class AuthenticationService {
             .role(RoleUserEnum.valueOf(request.getRole().getValue()))
             .build();
     userRepository.save(user);
+
+    // Creamos el UserConfig
+    userConfigService.createUserConfig(
+        UserConfigEntity.builder()
+            .user(user)
+            .dummy("created")
+            .scope(userScopeService.findByTier(Tier.FREE))
+            .build());
 
     org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
         .password(user.getPassword())

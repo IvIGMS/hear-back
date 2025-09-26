@@ -3,6 +3,7 @@ package com.app.hear.voiceNotes.services;
 import com.app.hear.common.exceptions.ConflictException;
 import com.app.hear.common.exceptions.NotFoundException;
 import com.app.hear.model.VoiceNoteDTO;
+import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
 import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
 import com.app.hear.spaces.dao.models.enums.RoleUserSpace;
@@ -47,6 +48,7 @@ public class VoiceNoteService {
     try {
       SpaceEntity space = spaceService.getSpaceEntityById(spaceId);
 
+      testMaximunVoiceNotesUser(ownerId, spaceId);
       // Guardar con el nombre original + hash + extensión original
       String originalFilename = file.getOriginalFilename();
       String extension =
@@ -83,8 +85,22 @@ public class VoiceNoteService {
               .build();
       voiceNoteRepository.saveAndFlush(voiceNoteEntityToSave);
       log.info("El archivo se ha guardado correctamente en la base de datos");
+    } catch (ConflictException e) {
+      throw new ConflictException(
+          "No puedes crear mas notas de voz para este scope. Has llegado al límite para un usuario gratuito. Actualiza a un plan premium.");
     } catch (Exception e) {
       throw new RuntimeException("Error desconocido", e);
+    }
+  }
+
+  private void testMaximunVoiceNotesUser(Long ownerId, Long spaceId) {
+    UserEntity user = userService.getUserEntityById(ownerId);
+    int maxVoiceNotesSpace = user.getUserConfig().getScope().getNumMaxVoiceNotesByScope();
+    int counterSpacesAdmin = spaceService.getSpaceById(ownerId, spaceId).getTotalVoiceNotes();
+
+    if (maxVoiceNotesSpace == counterSpacesAdmin || maxVoiceNotesSpace < counterSpacesAdmin) {
+      throw new ConflictException(
+          "No puedes crear mas notas de voz para este scope. Has llegado al límite para un usuario gratuito. Actualiza a un plan premium.");
     }
   }
 

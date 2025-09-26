@@ -32,6 +32,7 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
     if (!checkIsUser()) {
       throw new UnauthorizedException(STRING_NO_PREMISSIONS);
     }
+    // Comprobamos si llega al limite de spaces.
     Long ownerId = getAllClaims().get("user_id", Long.class);
     SpaceDTO spaceDTO = spaceService.createSpace(spaceCreateDTO, ownerId);
     return ResponseEntity.created(createLocation(spaceDTO.getId())).body(spaceDTO);

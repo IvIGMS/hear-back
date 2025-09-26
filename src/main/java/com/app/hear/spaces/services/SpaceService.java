@@ -9,9 +9,11 @@ import com.app.hear.model.RoleUserSpace;
 import com.app.hear.model.SpaceCreateDTO;
 import com.app.hear.model.SpaceDTO;
 import com.app.hear.model.UserSpaceRoleRequestDTO;
+import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
 import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
 import com.app.hear.spaces.dao.repositories.SpaceRepository;
+import com.app.hear.users.services.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -27,6 +29,7 @@ public class SpaceService {
   private final ModelMapper modelMapper;
   private final UserSpaceRoleService userSpaceRoleService;
   private final CatalogColorService catalogColorService;
+  private final UserService userService;
 
   public SpaceDTO createSpace(SpaceCreateDTO spaceCreateDTO, Long ownerId) {
     // Crear el space
@@ -37,6 +40,7 @@ public class SpaceService {
               throw new ConflictException(
                   "Space with name " + spaceCreateDTO.getName() + " already exists");
             });
+    testMaximunSpacesUser(ownerId);
     SpaceEntity spaceEntity = modelMapper.map(spaceCreateDTO, SpaceEntity.class);
     // Set color
     spaceEntity.setColor(getRandomColor());
@@ -50,6 +54,17 @@ public class SpaceService {
             .role(RoleUserSpace.ADMIN)
             .build());
     return modelMapper.map(savedSpace, SpaceDTO.class);
+  }
+
+  private void testMaximunSpacesUser(Long ownerId) {
+    UserEntity user = userService.getUserEntityById(ownerId);
+    int maxSpacesAdmin = user.getUserConfig().getScope().getNumMaxScopesAdmin();
+    int counterSpacesAdmin = getSpacesByUser(ownerId).getAdmin().size();
+
+    if (maxSpacesAdmin == counterSpacesAdmin || maxSpacesAdmin < counterSpacesAdmin) {
+      throw new ConflictException(
+          "No puedes crear mas scopes. Has llegado al límite para un usuario gratuito. Actualiza a un plan premium.");
+    }
   }
 
   public SpaceDTO getSpaceById(Long ownerId, Long spaceId) {
