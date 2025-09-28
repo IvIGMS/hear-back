@@ -2,7 +2,8 @@ package com.app.hear.security.dao.models.entities;
 
 import com.app.hear.common.exceptions.utils.AuditableEntity;
 import com.app.hear.security.dao.models.enums.RoleUserEnum;
-import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
+import com.app.hear.spaces.dao.models.entities.SpaceInvitationEntity;
+import com.app.hear.spaces.dao.models.entities.UserSpaceRoleEntity;
 import com.app.hear.users.dao.models.entities.UserConfigEntity;
 import com.app.hear.voiceNotes.dao.models.entities.VoiceNoteEntity;
 import jakarta.persistence.*;
@@ -37,7 +38,7 @@ public class UserEntity extends AuditableEntity {
   private String lastname;
 
   @OneToMany(mappedBy = "user")
-  private List<UserSpaceRole> spaceRoles;
+  private List<UserSpaceRoleEntity> spaceRoles;
 
   @OneToMany(mappedBy = "uploadedBy")
   private List<VoiceNoteEntity> voiceNotes;
@@ -51,4 +52,10 @@ public class UserEntity extends AuditableEntity {
 
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private UserConfigEntity userConfig;
+
+  @OneToMany(mappedBy = "senderUser")
+  private List<SpaceInvitationEntity> sentInvitations;
+
+  @OneToMany(mappedBy = "receiverUser")
+  private List<SpaceInvitationEntity> receivedInvitations;
 }

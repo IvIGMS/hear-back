@@ -5,12 +5,8 @@ import static com.app.hear.common.exceptions.utils.ControllerUtilsConstants.STRI
 import com.app.hear.api.SpacesApi;
 import com.app.hear.common.exceptions.utils.ControllerUtils;
 import com.app.hear.common.exceptions.utils.UnauthorizedException;
-import com.app.hear.model.SpaceCreateDTO;
-import com.app.hear.model.SpaceDTO;
-import com.app.hear.model.SpaceListDTO;
-import com.app.hear.model.SpaceListVoiceNotesDTO;
-import com.app.hear.model.UserSpaceRoleDTO;
-import com.app.hear.model.UserSpaceRoleRequestDTO;
+import com.app.hear.model.*;
+import com.app.hear.spaces.services.SpaceInvitationService;
 import com.app.hear.spaces.services.SpaceService;
 import com.app.hear.spaces.services.SpaceVoiceNoteService;
 import com.app.hear.spaces.services.UserSpaceRoleService;
@@ -26,6 +22,7 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
   private final SpaceService spaceService;
   private final UserSpaceRoleService userSpaceRoleService;
   private final SpaceVoiceNoteService spaceVoiceNoteService;
+  private final SpaceInvitationService spaceInvitationService;
 
   @Override
   public ResponseEntity<SpaceDTO> createSpace(SpaceCreateDTO spaceCreateDTO) {
@@ -84,5 +81,16 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
     Long ownerId = getAllClaims().get("user_id", Long.class);
     spaceService.deleteSpaceById(spaceId, ownerId);
     return ResponseEntity.noContent().build();
+  }
+
+  @Override
+  public ResponseEntity<SpaceInvitationDTO> sendInvitationToMySpace(
+      UserSpaceRoleRequestDTO userSpaceRoleRequestDTO) {
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
+    return ResponseEntity.ok(
+        spaceInvitationService.sendInvitationToMySpace(userSpaceRoleRequestDTO, ownerId));
   }
 }

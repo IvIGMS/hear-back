@@ -11,12 +11,13 @@ import com.app.hear.model.SpaceDTO;
 import com.app.hear.model.UserSpaceRoleRequestDTO;
 import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
-import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
+import com.app.hear.spaces.dao.models.entities.UserSpaceRoleEntity;
 import com.app.hear.spaces.dao.repositories.SpaceRepository;
 import com.app.hear.users.services.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -98,7 +99,7 @@ public class SpaceService {
 
     list.forEach(
         space -> {
-          UserSpaceRole rolCurrentUser =
+          UserSpaceRoleEntity rolCurrentUser =
               space.getUserRoles().stream()
                   .filter(role -> role.getUser().getId().equals(userId))
                   .findFirst()
@@ -128,7 +129,7 @@ public class SpaceService {
 
   @Transactional
   public void deleteSpaceById(Long spaceId, Long ownerId) {
-    UserSpaceRole userSpaceRole =
+    UserSpaceRoleEntity userSpaceRole =
         userSpaceRoleService.getUserSpaceRoleByUserIdAndSpaceId(ownerId, spaceId);
     if (userSpaceRole
         .getRole()
@@ -146,5 +147,24 @@ public class SpaceService {
       throw new ConflictException(
           "No tienes perimos para borrar este space, eres member, necesitas ser admin");
     }
+  }
+
+  public boolean areYouAdminOfTheSpace(Long spaceId, Long userId) {
+    AtomicBoolean result = new AtomicBoolean(false);
+
+    SpaceEntity spaceEntity = getSpaceEntityById(spaceId);
+
+    spaceEntity
+        .getUserRoles()
+        .forEach(
+            ur -> {
+              if (ur.getUser().getId().equals(userId)
+                  && ur.getRole()
+                      .equals(com.app.hear.spaces.dao.models.enums.RoleUserSpace.ADMIN)) {
+                result.set(true);
+              }
+            });
+
+    return result.get();
   }
 }

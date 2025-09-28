@@ -6,7 +6,7 @@ import com.app.hear.model.UserSpaceRoleDTO;
 import com.app.hear.model.UserSpaceRoleRequestDTO;
 import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
-import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
+import com.app.hear.spaces.dao.models.entities.UserSpaceRoleEntity;
 import com.app.hear.spaces.dao.repositories.SpaceRepository;
 import com.app.hear.spaces.dao.repositories.UserSpaceRoleRepository;
 import com.app.hear.users.services.UserService;
@@ -43,7 +43,7 @@ public class UserSpaceRoleService {
     UserEntity userEntity = userService.getUserEntityById(userSpaceRoleRequestDTO.getUserId());
     SpaceEntity spaceEntity = getSpaceById(userSpaceRoleRequestDTO.getSpaceId());
 
-    UserSpaceRole userSpaceRole = new UserSpaceRole();
+    UserSpaceRoleEntity userSpaceRole = new UserSpaceRoleEntity();
     userSpaceRole.setUser(userEntity);
     userSpaceRole.setSpace(spaceEntity);
     userSpaceRole.setRole(
@@ -51,13 +51,13 @@ public class UserSpaceRoleService {
             userSpaceRoleRequestDTO.getRole(),
             com.app.hear.spaces.dao.models.enums.RoleUserSpace.class));
 
-    UserSpaceRole savedUserSpaceRole = userSpaceRoleRepository.save(userSpaceRole);
+    UserSpaceRoleEntity savedUserSpaceRole = userSpaceRoleRepository.save(userSpaceRole);
 
     return modelMapper.map(savedUserSpaceRole, UserSpaceRoleDTO.class);
   }
 
   public void cleanBeforeDeleteASpace(Long spaceId) {
-    List<UserSpaceRole> spaceRoleToDelete = userSpaceRoleRepository.findBySpaceId(spaceId);
+    List<UserSpaceRoleEntity> spaceRoleToDelete = userSpaceRoleRepository.findBySpaceId(spaceId);
     if (!spaceRoleToDelete.isEmpty()) {
       spaceRoleToDelete.forEach(
           role -> {
@@ -68,7 +68,7 @@ public class UserSpaceRoleService {
     }
   }
 
-  public UserSpaceRole getUserSpaceRoleByUserIdAndSpaceId(Long userId, Long spaceId) {
+  public UserSpaceRoleEntity getUserSpaceRoleByUserIdAndSpaceId(Long userId, Long spaceId) {
     getSpaceById(spaceId);
     return userSpaceRoleRepository
         .findByUserIdAndSpaceId(userId, spaceId)
@@ -82,5 +82,9 @@ public class UserSpaceRoleService {
     return spaceRepository
         .findById(spaceId)
         .orElseThrow(() -> new NotFoundException("Space with id " + spaceId + " not found"));
+  }
+
+  public boolean existRoleByUserIdAndSpaceId(Long userId, Long spaceId) {
+    return userSpaceRoleRepository.findByUserIdAndSpaceId(userId, spaceId).isPresent();
   }
 }

@@ -6,6 +6,7 @@ import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.security.dao.models.enums.RoleUserEnum;
 import com.app.hear.users.dao.dto.UserDownDto;
 import com.app.hear.users.dao.repositories.UserRepository;
+import com.app.hear.users.dto.projections.UserProjectionDTO;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +45,22 @@ public class UserService {
   public List<UserDownDto> usersDownToday() {
     LocalDate now = LocalDate.now();
     return userRepository.usersDownToday(now);
+  }
+
+  public List<UserDTO> getUserCanBeInvitedToThisSpace(Long spaceId) {
+    List<UserProjectionDTO> userProjections =
+        userRepository.getUserCanBeInvitedToThisSpace(spaceId);
+    return userProjections.stream()
+        .map(
+            user ->
+                UserDTO.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .firstname(user.getFirstname())
+                    .lastname(user.getLastname())
+                    .isEmailActive(user.getIsEmailActive())
+                    .role(user.getRole())
+                    .build())
+        .toList();
   }
 }

@@ -5,7 +5,7 @@ import com.app.hear.common.exceptions.NotFoundException;
 import com.app.hear.model.VoiceNoteDTO;
 import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.spaces.dao.models.entities.SpaceEntity;
-import com.app.hear.spaces.dao.models.entities.UserSpaceRole;
+import com.app.hear.spaces.dao.models.entities.UserSpaceRoleEntity;
 import com.app.hear.spaces.dao.models.enums.RoleUserSpace;
 import com.app.hear.spaces.services.SpaceService;
 import com.app.hear.spaces.services.UserSpaceRoleService;
@@ -283,7 +283,7 @@ public class VoiceNoteService {
             .orElseThrow(
                 () -> new NotFoundException("El voice note con id " + voiceNoteId + " no existe."));
     SpaceEntity space = spaceService.getSpaceEntityByVoiceNoteId(voiceNoteId);
-    UserSpaceRole userSpaceRole =
+    UserSpaceRoleEntity userSpaceRole =
         userSpaceRoleService.getUserSpaceRoleByUserIdAndSpaceId(ownerId, space.getId());
     if (userSpaceRole.getRole().name().equals(RoleUserSpace.ADMIN.name())) {
       voiceNoteRepository.deleteById(voiceNoteId);

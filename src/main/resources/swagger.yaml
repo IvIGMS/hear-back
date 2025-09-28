@@ -191,6 +191,48 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
       tags:
         - voice-notes
+  /users/{spaceId}/can-be-invited:
+    get:
+      summary: get users can be invited to this space
+      operationId: getUserCanBeInvitedToThisSpace
+      parameters:
+        - $ref: '#/components/parameters/spaceId'
+      responses:
+        '200':
+          $ref: '#/components/responses/ListUsersResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - users
+  /spaces/invitations:
+    post:
+      summary: send an invitation to join in a space
+      operationId: sendInvitationToMySpace
+      requestBody:
+        $ref: '#/components/requestBodies/UserSpaceRoleCreateRequestBody'
+      responses:
+        '201':
+          $ref: '#/components/responses/SpaceInvitationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - spaces
   /spaces/user-space-role:
     post:
       summary: create a new user space role
@@ -608,6 +650,12 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/VoiceNoteDTO'
+    SpaceInvitationResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SpaceInvitationDTO'
     UserSpaceRoleResponse:
       description: OK.
       content:
@@ -798,6 +846,21 @@ components:
         code:
           type: string
           example: "RO"
+    SpaceInvitationDTO:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/genericId'
+        spaceId:
+          $ref: '#/components/schemas/genericId'
+        senderUserId:
+          $ref: '#/components/schemas/genericId'
+        receiverUserId:
+          $ref: '#/components/schemas/genericId'
+        role:
+          $ref: '#/components/schemas/RoleUserSpace'
+        invitationStatus:
+          $ref: '#/components/schemas/InvitationStatus'
     UserSpaceRoleDTO:
       type: object
       properties:
@@ -1033,6 +1096,13 @@ components:
         - ADMIN
         - MEMBER
       description: Role de los users de la app
+    InvitationStatus:
+      type: string
+      enum:
+        - PENDING
+        - ACCEPTED
+        - REJECTED
+      description: status de las invitaciones al space
     Problem:
       type: object
       properties:

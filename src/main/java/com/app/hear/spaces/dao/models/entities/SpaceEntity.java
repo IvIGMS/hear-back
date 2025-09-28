@@ -29,10 +29,13 @@ public class SpaceEntity extends AuditableEntity {
   private String description;
 
   @OneToMany(mappedBy = "space")
-  private List<UserSpaceRole> userRoles;
+  private List<UserSpaceRoleEntity> userRoles;
 
   @OneToMany(mappedBy = "space")
   private List<VoiceNoteEntity> voiceNotes;
+
+  @OneToMany(mappedBy = "space")
+  private List<SpaceInvitationEntity> spaceInvitations;
 
   @ManyToMany
   @JoinTable(

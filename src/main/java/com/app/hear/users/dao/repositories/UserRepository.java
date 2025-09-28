@@ -3,6 +3,7 @@ package com.app.hear.users.dao.repositories;
 import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.security.dao.models.enums.RoleUserEnum;
 import com.app.hear.users.dao.dto.UserDownDto;
+import com.app.hear.users.dto.projections.UserProjectionDTO;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -45,4 +46,28 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             """,
       nativeQuery = true)
   List<UserDownDto> usersDownToday(@Param("now") LocalDate now);
+
+  @Query(
+      value =
+          """
+          SELECT
+            u.id as id,
+            u.email as email,
+            u.firstname as firstname,
+            u.lastname as lastname,
+            u.is_active as isEmailActive,
+            u.role as role
+          FROM
+            users u
+          WHERE
+            u.id NOT IN
+          (SELECT
+          	user_id
+          	FROM user_space_roles usr
+          	WHERE usr.space_id = :spaceId
+          )
+
+          """,
+      nativeQuery = true)
+  List<UserProjectionDTO> getUserCanBeInvitedToThisSpace(@Param("spaceId") Long spaceId);
 }
