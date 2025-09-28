@@ -63,4 +63,21 @@ public class UserService {
                     .build())
         .toList();
   }
+
+  public List<UserDTO> getUserCanBeDeletedFromThisSpace(Long ownerId, Long spaceId) {
+    List<UserProjectionDTO> userProjections =
+        userRepository.getUserCanBeDeletedFromThisSpace(ownerId, spaceId);
+    return userProjections.stream()
+        .map(
+            user ->
+                UserDTO.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .firstname(user.getFirstname())
+                    .lastname(user.getLastname())
+                    .isEmailActive(user.getIsEmailActive())
+                    .role(user.getRole())
+                    .build())
+        .toList();
+  }
 }

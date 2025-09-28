@@ -36,4 +36,13 @@ public class UserController extends ControllerUtils implements UsersApi {
     }
     return ResponseEntity.ok(userService.getUserCanBeInvitedToThisSpace(spaceId));
   }
+
+  @Override
+  public ResponseEntity<List<UserDTO>> getUserCanBeDeletedFromThisSpace(Long spaceId) {
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
+    return ResponseEntity.ok(userService.getUserCanBeDeletedFromThisSpace(ownerId, spaceId));
+  }
 }

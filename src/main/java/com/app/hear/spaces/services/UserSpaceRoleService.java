@@ -87,4 +87,25 @@ public class UserSpaceRoleService {
   public boolean existRoleByUserIdAndSpaceId(Long userId, Long spaceId) {
     return userSpaceRoleRepository.findByUserIdAndSpaceId(userId, spaceId).isPresent();
   }
+
+  public UserSpaceRoleDTO deleteUserSpaceRole(
+      Long ownerId, UserSpaceRoleRequestDTO userSpaceRoleRequestDTO) {
+    if (!existRoleByUserIdAndSpaceId(ownerId, userSpaceRoleRequestDTO.getSpaceId())) {
+      throw new ConflictException(
+          "El usuario que pide la petición de borrar otro usuario no es admin en este space");
+    }
+    UserSpaceRoleEntity userSpaceRole =
+        userSpaceRoleRepository
+            .findByUserIdAndSpaceId(
+                userSpaceRoleRequestDTO.getUserId(), userSpaceRoleRequestDTO.getSpaceId())
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "El user "
+                            + userSpaceRoleRequestDTO.getUserId()
+                            + " no tiene permisos sobre el space "
+                            + userSpaceRoleRequestDTO.getSpaceId()));
+    userSpaceRoleRepository.deleteById(userSpaceRole.getId());
+    return modelMapper.map(userSpaceRole, UserSpaceRoleDTO.class);
+  }
 }

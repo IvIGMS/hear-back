@@ -212,6 +212,27 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
       tags:
         - users
+  /users/{spaceId}/can-be-deleted:
+    get:
+      summary: get users can be deleted from this space
+      operationId: getUserCanBeDeletedFromThisSpace
+      parameters:
+        - $ref: '#/components/parameters/spaceId'
+      responses:
+        '200':
+          $ref: '#/components/responses/ListUsersResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - users
   /spaces/invitations:
     post:
       summary: send an invitation to join in a space
@@ -241,6 +262,26 @@ paths:
         $ref: '#/components/requestBodies/UserSpaceRoleCreateRequestBody'
       responses:
         '201':
+          $ref: '#/components/responses/UserSpaceRoleResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - spaces
+    delete:
+      summary: delete an user space role
+      operationId: deleteUserSpaceRole
+      requestBody:
+        $ref: '#/components/requestBodies/UserSpaceRoleCreateRequestBody'
+      responses:
+        '200':
           $ref: '#/components/responses/UserSpaceRoleResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -338,6 +379,7 @@ paths:
         - spaces
     delete:
       summary: delete a space by id
+      description: delete a space by id. It need a space without voices. It make a delete about UserSpaceRole to clean the database.
       operationId: deleteSpaceById
       parameters:
         - $ref: '#/components/parameters/spaceId'
@@ -1061,6 +1103,9 @@ components:
           $ref: '#/components/schemas/genericId'
         role:
           $ref: '#/components/schemas/RoleUserSpace'
+      required:
+        - userId
+        - spaceId
     RegisterRequestDTO:
       type: object
       properties:

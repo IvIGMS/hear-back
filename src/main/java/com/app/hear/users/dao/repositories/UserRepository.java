@@ -70,4 +70,29 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
           """,
       nativeQuery = true)
   List<UserProjectionDTO> getUserCanBeInvitedToThisSpace(@Param("spaceId") Long spaceId);
+
+  @Query(
+      value =
+          """
+                  SELECT
+                    u.id as id,
+                    u.email as email,
+                    u.firstname as firstname,
+                    u.lastname as lastname,
+                    u.is_active as isEmailActive,
+                    u.role as role
+                  FROM
+                    users u
+                  WHERE
+                    u.id IN
+                  (SELECT
+                      user_id
+                      FROM user_space_roles usr
+                      WHERE usr.space_id = :spaceId
+                  )
+                  AND u.id != :ownerId
+                  """,
+      nativeQuery = true)
+  List<UserProjectionDTO> getUserCanBeDeletedFromThisSpace(
+      @Param("ownerId") Long ownerId, @Param("spaceId") Long spaceId);
 }

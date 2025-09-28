@@ -93,4 +93,15 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
     return ResponseEntity.ok(
         spaceInvitationService.sendInvitationToMySpace(userSpaceRoleRequestDTO, ownerId));
   }
+
+  @Override
+  public ResponseEntity<UserSpaceRoleDTO> deleteUserSpaceRole(
+      UserSpaceRoleRequestDTO userSpaceRoleRequestDTO) {
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
+    return ResponseEntity.ok(
+        userSpaceRoleService.deleteUserSpaceRole(ownerId, userSpaceRoleRequestDTO));
+  }
 }
