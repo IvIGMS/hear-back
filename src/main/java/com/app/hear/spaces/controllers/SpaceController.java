@@ -47,8 +47,12 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
   @Override
   public ResponseEntity<UserSpaceRoleDTO> createUserSpaceRole(
       UserSpaceRoleRequestDTO userSpaceRoleRequestDTO) {
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
     UserSpaceRoleDTO userSpaceRoleDTO =
-        userSpaceRoleService.createUserSpaceRole(userSpaceRoleRequestDTO);
+        userSpaceRoleService.createUserSpaceRole(userSpaceRoleRequestDTO, ownerId);
     return ResponseEntity.created(createLocation(userSpaceRoleDTO.getId())).body(userSpaceRoleDTO);
   }
 

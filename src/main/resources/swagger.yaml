@@ -11,9 +11,50 @@ tags:
     description: Endpoints de gestión de spaces
   - name: voice-notes
     description: Endpoints de gestión voice notes
+  - name: space-invitations
+    description: Endpoints de gestión de invitations
 security:
   - bearerAuth: []
 paths:
+  /space-invitations:
+    get:
+      summary: get pending invitations
+      operationId: getPendingInvitations
+      responses:
+        '200':
+          $ref: '#/components/responses/SpaceInvitationResponseList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - space-invitations
+    patch:
+      summary: answer pending invitation
+      operationId: answerPendingInvitation
+      requestBody:
+        $ref: '#/components/requestBodies/SpaceInvitationAnswerRequestBody'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - space-invitations
   /colors:
     get:
       summary: get all colors
@@ -81,7 +122,6 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
       tags:
         - voice-notes
-
   /voice-notes/{id}/stream:
     get:
       summary: Stream de una nota de voz (MP3)
@@ -522,6 +562,13 @@ paths:
         - auth
 components:
   requestBodies:
+    SpaceInvitationAnswerRequestBody:
+      description: answer space invitation
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SpaceInvitationAnswerRequestDTO'
     TagSpaceCreateRequestBody:
       description: Registrar un user
       required: true
@@ -670,6 +717,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/SpaceListDTO'
+    NotificationListResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/NotificationDTO'
     ColorListResponse:
       description: OK.
       content:
@@ -692,6 +747,14 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/VoiceNoteDTO'
+    SpaceInvitationResponseList:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/SpaceInvitationDTO'
     SpaceInvitationResponse:
       description: OK.
       content:
@@ -872,6 +935,31 @@ components:
                   One or more fields are invalid. See details for more information.
                 instance: 'https://api.example.com/problems/validation-error/12345'
   schemas:
+    SpaceInvitationAnswerRequestDTO:
+      type: object
+      properties:
+        userId:
+          $ref: '#/components/schemas/genericId'
+        spaceId:
+          $ref: '#/components/schemas/genericId'
+        answer:
+          $ref: '#/components/schemas/InvitationStatusResponse'
+    NotificationDTO:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/genericId'
+        isSended:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "This a message for notification"
+        receiverUserId:
+          $ref: '#/components/schemas/genericId'
+        notificationTypeCode:
+          type: string
+          example: "INVITATION_TYPE"
     ColorDTO:
       type: object
       properties:
@@ -903,6 +991,15 @@ components:
           $ref: '#/components/schemas/RoleUserSpace'
         invitationStatus:
           $ref: '#/components/schemas/InvitationStatus'
+        spaceName:
+          type: string
+          example: 'Universe'
+        senderName:
+          type: string
+          example: 'Mark'
+        senderLastname:
+          type: string
+          example: 'Suckerberg'
     UserSpaceRoleDTO:
       type: object
       properties:
@@ -943,24 +1040,6 @@ components:
           $ref: '#/components/schemas/genericId'
         spaceId:
           $ref: '#/components/schemas/genericId'
-    NotificationDto:
-      type: object
-      properties:
-        emailTo:
-          type: string
-          example: user@user.com
-        subject:
-          type: string
-          example: Notificación suscripción
-        text:
-          type: string
-          example: Texto de ejemplo del correo
-        notificationType:
-          type: string
-          example: END_SUBSCRIPTION
-        isSended:
-          type: boolean
-          example: false
     PagedResponseUserDTO:
       type: object
       properties:
@@ -1145,6 +1224,12 @@ components:
       type: string
       enum:
         - PENDING
+        - ACCEPTED
+        - REJECTED
+      description: status de las invitaciones al space
+    InvitationStatusResponse:
+      type: string
+      enum:
         - ACCEPTED
         - REJECTED
       description: status de las invitaciones al space

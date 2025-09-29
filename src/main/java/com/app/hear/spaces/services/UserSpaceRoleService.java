@@ -25,14 +25,13 @@ public class UserSpaceRoleService {
   private final UserService userService;
   private final SpaceRepository spaceRepository;
 
-  public UserSpaceRoleDTO createUserSpaceRole(UserSpaceRoleRequestDTO userSpaceRoleRequestDTO) {
+  public UserSpaceRoleDTO createUserSpaceRole(
+      UserSpaceRoleRequestDTO userSpaceRoleRequestDTO, Long ownerId) {
     userSpaceRoleRepository
         .findByUserIdAndSpaceId(
             userSpaceRoleRequestDTO.getUserId(), userSpaceRoleRequestDTO.getSpaceId())
         .ifPresent(
             userSpaceRole -> {
-              // todo: verificar si el role que nos llega es el mismo y si no lo es lo tenemos que
-              // actualizar
               throw new ConflictException(
                   "User with id "
                       + userSpaceRoleRequestDTO.getUserId()

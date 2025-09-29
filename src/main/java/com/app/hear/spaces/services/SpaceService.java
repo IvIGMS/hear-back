@@ -53,7 +53,8 @@ public class SpaceService {
             .spaceId(savedSpace.getId())
             .userId(ownerId)
             .role(RoleUserSpace.ADMIN)
-            .build());
+            .build(),
+        ownerId);
     return modelMapper.map(savedSpace, SpaceDTO.class);
   }
 

@@ -34,7 +34,7 @@ public class SpaceEntity extends AuditableEntity {
   @OneToMany(mappedBy = "space")
   private List<VoiceNoteEntity> voiceNotes;
 
-  @OneToMany(mappedBy = "space")
+  @OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<SpaceInvitationEntity> spaceInvitations;
 
   @ManyToMany
