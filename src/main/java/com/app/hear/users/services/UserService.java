@@ -26,11 +26,9 @@ public class UserService {
   }
 
   public UserDTO getUserDTOById(Long userId) {
-    UserEntity user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException("User not found: " + userId));
-    return modelMapper.map(user, UserDTO.class);
+    return userRepository
+        .findByIdExtended(userId)
+        .orElseThrow(() -> new NotFoundException("User not found: " + userId));
   }
 
   public List<UserDTO> getUsersByOwner(Long ownerId) {

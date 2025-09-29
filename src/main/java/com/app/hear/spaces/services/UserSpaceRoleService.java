@@ -107,4 +107,10 @@ public class UserSpaceRoleService {
     userSpaceRoleRepository.deleteById(userSpaceRole.getId());
     return modelMapper.map(userSpaceRole, UserSpaceRoleDTO.class);
   }
+
+  public void unlinkOwnUserFromSpace(Long ownerId, Long spaceId) {
+    UserSpaceRoleEntity userSpaceRole = getUserSpaceRoleByUserIdAndSpaceId(ownerId, spaceId);
+    userSpaceRoleRepository.deleteById(userSpaceRole.getId());
+    log.info("User desvinculado correctamente del space");
+  }
 }

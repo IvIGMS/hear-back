@@ -108,4 +108,14 @@ public class SpaceController extends ControllerUtils implements SpacesApi {
     return ResponseEntity.ok(
         userSpaceRoleService.deleteUserSpaceRole(ownerId, userSpaceRoleRequestDTO));
   }
+
+  @Override
+  public ResponseEntity<Void> unlinkOwnUserFromSpace(Long spaceId) {
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
+    userSpaceRoleService.unlinkOwnUserFromSpace(ownerId, spaceId);
+    return ResponseEntity.noContent().build();
+  }
 }

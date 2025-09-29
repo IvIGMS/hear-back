@@ -45,4 +45,13 @@ public class UserController extends ControllerUtils implements UsersApi {
     Long ownerId = getAllClaims().get("user_id", Long.class);
     return ResponseEntity.ok(userService.getUserCanBeDeletedFromThisSpace(ownerId, spaceId));
   }
+
+  @Override
+  public ResponseEntity<UserDTO> getOwnUser() {
+    if (!checkIsUser()) {
+      throw new UnauthorizedException(STRING_NO_PREMISSIONS);
+    }
+    Long ownerId = getAllClaims().get("user_id", Long.class);
+    return ResponseEntity.ok(userService.getUserDTOById(ownerId));
+  }
 }

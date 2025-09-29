@@ -1,5 +1,6 @@
 package com.app.hear.users.dao.repositories;
 
+import com.app.hear.model.UserDTO;
 import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.security.dao.models.enums.RoleUserEnum;
 import com.app.hear.users.dao.dto.UserDownDto;
@@ -12,6 +13,25 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
+  @Query(
+      value =
+          """
+          SELECT
+          u.id AS id,
+          u.email AS email,
+          u.firstname AS firstname,
+          u.lastname AS lastname,
+          u.is_active AS isEmailActive,
+          u.role AS role,
+          us.tier AS tier
+          FROM users u
+          INNER JOIN user_config uc ON uc.user_id = u.id
+          INNER JOIN user_scope us ON uc.scope_id = us.id
+          WHERE u.id = :userId
+          """,
+      nativeQuery = true)
+  Optional<UserDTO> findByIdExtended(@Param("userId") Long userId);
+
   Optional<UserEntity> findByEmail(String email);
 
   @Query(

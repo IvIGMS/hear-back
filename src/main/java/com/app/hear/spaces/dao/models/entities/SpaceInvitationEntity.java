@@ -1,9 +1,9 @@
 package com.app.hear.spaces.dao.models.entities;
 
 import com.app.hear.common.exceptions.utils.AuditableEntity;
-import com.app.hear.model.RoleUserSpace;
 import com.app.hear.security.dao.models.entities.UserEntity;
 import com.app.hear.spaces.dao.models.enums.InvitationStatus;
+import com.app.hear.spaces.dao.models.enums.RoleUserSpace;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

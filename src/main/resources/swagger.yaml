@@ -294,6 +294,27 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
       tags:
         - spaces
+  /spaces/user-space-role/{spaceId}:
+    delete:
+      summary: unlink own user from an space
+      operationId: unlinkOwnUserFromSpace
+      parameters:
+        - $ref: '#/components/parameters/spaceId'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+      tags:
+        - spaces
   /spaces/user-space-role:
     post:
       summary: create a new user space role
@@ -501,6 +522,23 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
       tags:
         - tags
+  /users:
+    get:
+      summary: getOwnUser
+      operationId: getOwnUser
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
   /users/test:
     get:
       summary: endpoint publico test
@@ -705,6 +743,12 @@ components:
         type: integer
         format: int64
   responses:
+    UserResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserDTO'
     SpaceListVoiceNotesResponse:
       description: OK.
       content:
@@ -1082,6 +1126,9 @@ components:
         role:
           type: string
           example: USER
+        tier:
+          type: string
+          example: FREE
     AuthenticationRequestDTO:
       type: object
       properties:

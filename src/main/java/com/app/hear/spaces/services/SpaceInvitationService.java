@@ -65,7 +65,10 @@ public class SpaceInvitationService {
             .space(spaceEntity)
             .senderUser(senderUser)
             .receiverUser(receiverUser)
-            .roleUserSpace(userSpaceRoleRequestDTO.getRole())
+            .roleUserSpace(
+                modelMapper.map(
+                    userSpaceRoleRequestDTO.getRole(),
+                    com.app.hear.spaces.dao.models.enums.RoleUserSpace.class))
             .invitationStatus(InvitationStatus.PENDING)
             .build();
     // Guardar invitación
@@ -114,7 +117,7 @@ public class SpaceInvitationService {
           UserSpaceRoleRequestDTO.builder()
               .userId(spaceInvitationEntity.getReceiverUser().getId())
               .spaceId(spaceInvitationEntity.getSpace().getId())
-              .role(spaceInvitationEntity.getRoleUserSpace())
+              .role(modelMapper.map(spaceInvitationEntity.getRoleUserSpace(), RoleUserSpace.class))
               .build();
 
       userSpaceRoleService.createUserSpaceRole(role, spaceInvitationEntity.getSenderUser().getId());
